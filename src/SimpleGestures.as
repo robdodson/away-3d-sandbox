@@ -38,10 +38,10 @@ package
 		private var antiAlias:Number = 2;
 		
 		// Materials
-		private var planeMaterial:ColorMaterial;
 		
 		// Primitives etc
-		private var plane:Plane;
+		private var plane1:Plane;
+		private var plane2:Plane;
 		
 		// --------------------------------------------------------------------------------------------------------------
 		
@@ -107,27 +107,40 @@ package
 		
 		private function setupMaterials():void
 		{
-			// Setup the planes material
-			planeMaterial = new ColorMaterial(0x00FFCC);
+			// Setup any materials
 		}
 		
 		private function setupPrimitivesAndModels():void
 		{
-			// Setup the plane
-			plane = new Plane(planeMaterial, 500, 500);
-			plane.rotationX = -90;
-			plane.mouseEnabled = true;
-			plane.mouseDetails = true;
-			scene.addChild(plane);
+			// Setup the planes
+			plane1 = new Plane(new ColorMaterial(Math.random() * 0xFFFFFF), 500, 500);
+			plane1.yUp = false;
+			plane1.mouseEnabled = true;
+			plane1.mouseDetails = true;
+			scene.addChild(plane1);
+			
+			plane2 = new Plane(new ColorMaterial(Math.random() * 0xFFFFFF), 500, 500);
+			plane2.yUp = false;
+			plane2.mouseEnabled = true;
+			plane2.mouseDetails = true;
+			plane2.x = 1000;
+			plane2.y = 500;
+			scene.addChild(plane2);
 		}
 		
 		private function setupEventListeners():void
 		{
-			plane.addEventListener(MouseEvent3D.CLICK, onClick);
-			plane.addEventListener(GestureEvent3D.GESTURE_PAN, onGesturePan);
-			plane.addEventListener(GestureEvent3D.GESTURE_ROTATE, onGestureRotate);
-			plane.addEventListener(GestureEvent3D.GESTURE_SWIPE, onGestureSwipe);
-			plane.addEventListener(GestureEvent3D.GESTURE_ZOOM, onGestureZoom);
+			plane1.addEventListener(MouseEvent3D.CLICK, onClick);
+			plane1.addEventListener(GestureEvent3D.GESTURE_PAN, onGesturePan);
+			plane1.addEventListener(GestureEvent3D.GESTURE_ROTATE, onGestureRotate);
+			plane1.addEventListener(GestureEvent3D.GESTURE_SWIPE, onGestureSwipe);
+			plane1.addEventListener(GestureEvent3D.GESTURE_ZOOM, onGestureZoom);
+
+			plane2.addEventListener(MouseEvent3D.CLICK, onClick);
+			plane2.addEventListener(GestureEvent3D.GESTURE_PAN, onGesturePan);
+			plane2.addEventListener(GestureEvent3D.GESTURE_ROTATE, onGestureRotate);
+			plane2.addEventListener(GestureEvent3D.GESTURE_SWIPE, onGestureSwipe);
+			plane2.addEventListener(GestureEvent3D.GESTURE_ZOOM, onGestureZoom);
 			
 			// Setup resize handler
 			stage.addEventListener(Event.RESIZE, resizeHandler);
@@ -166,7 +179,7 @@ package
 		{
 			var target:Object3D = event.object;
 			target.scaleX *= event.scaleX;
-			target.scaleZ = target.scaleX;
+			target.scaleY = target.scaleX;
 		}
 		
 		private function renderHandler(e:Event):void
