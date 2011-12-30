@@ -191,6 +191,7 @@ package away3d.core.managers
 				_hitTestRenderer.update(_view.mouseX / _view.width, _view.mouseY / _view.height, collector);
 				_activeRenderable = _hitTestRenderer.hitRenderable;
 				_activeObject = (_activeRenderable && _activeRenderable.mouseEnabled) ? _activeRenderable.sourceEntity : null;
+				//trace(this, _activeObject);
 			}
 			else {
 				_activeObject = null;

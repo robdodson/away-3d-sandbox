@@ -2,6 +2,7 @@ package away3d.containers
 {
 	import away3d.arcane;
 	import away3d.cameras.Camera3D;
+	import away3d.core.managers.Gesture3DManager;
 	import away3d.core.managers.Mouse3DManager;
 	import away3d.core.managers.Stage3DManager;
 	import away3d.core.managers.Stage3DProxy;
@@ -11,9 +12,8 @@ package away3d.containers
 	import away3d.core.render.RendererBase;
 	import away3d.core.traverse.EntityCollector;
 	import away3d.lights.LightBase;
-
+	
 	import flash.display.BitmapData;
-
 	import flash.display.Sprite;
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DTextureFormat;
@@ -44,6 +44,7 @@ package away3d.containers
 		private var _backgroundAlpha : Number = 1;
 
 		private var _mouse3DManager : Mouse3DManager;
+		private var _gesture3DManager : Gesture3DManager;
 		private var _stage3DManager : Stage3DManager;
 
 		private var _renderer : RendererBase;
@@ -74,6 +75,7 @@ package away3d.containers
 			_camera = camera || new Camera3D();
 			_renderer = renderer || new DefaultRenderer();
 			_mouse3DManager = new Mouse3DManager(this);
+			_gesture3DManager = new Gesture3DManager(this);
 			_depthRenderer = new DepthRenderer();
 			_entityCollector = new EntityCollector();
 			
@@ -423,8 +425,10 @@ package away3d.containers
 			_scene.traversePartitions(_entityCollector);
 
 			// render things
-			if (_entityCollector.numMouseEnableds > 0)
+			if (_entityCollector.numMouseEnableds > 0) {
 				_mouse3DManager.updateHitData();
+				_gesture3DManager.updateHitData(); // rd: this is a slow down because we're finding the hit object twice
+			}
 
 			updateLights(_entityCollector);
 
@@ -444,6 +448,7 @@ package away3d.containers
 
 			// fire collected mouse events
 			_mouse3DManager.fireMouseEvents();
+			_gesture3DManager.fireGestureEvents();
 		}
 
 		private function updateGlobalPos() : void
@@ -533,8 +538,9 @@ package away3d.containers
 			_stage3DProxy.dispose();
 			_renderer.dispose();
 			_mouse3DManager.dispose();
+			_gesture3DManager.dispose();
 			if (_depthRenderer) _depthRenderer.dispose();
-			_mouse3DManager.dispose();
+			_mouse3DManager.dispose(); // rd: is this duplicate necessary?
 			if (_depthRender) _depthRender.dispose();
 		}
 
@@ -582,7 +588,7 @@ package away3d.containers
 			_stage3DProxy = _stage3DManager.getFreeStage3DProxy();
 			_stage3DProxy.x = _globalPos.x;
 			_stage3DProxy.y = _globalPos.y;
-			_renderer.stage3DProxy = _depthRenderer.stage3DProxy = _mouse3DManager.stage3DProxy = _stage3DProxy;
+			_renderer.stage3DProxy = _depthRenderer.stage3DProxy = _mouse3DManager.stage3DProxy = _gesture3DManager.stage3DProxy = _stage3DProxy;
 		}
 
 		private function onAdded(event : Event) : void

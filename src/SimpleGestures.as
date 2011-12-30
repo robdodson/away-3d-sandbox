@@ -4,15 +4,21 @@ package
 	import away3d.containers.Scene3D;
 	import away3d.containers.View3D;
 	import away3d.controllers.HoverController;
+	import away3d.core.base.Object3D;
 	import away3d.debug.AwayStats;
 	import away3d.debug.Trident;
+	import away3d.events.GestureEvent3D;
+	import away3d.events.MouseEvent3D;
 	import away3d.materials.ColorMaterial;
 	import away3d.primitives.Plane;
+	
+	import com.gestureworks.cml.element.Gesture;
 	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
+	import flash.events.TransformGestureEvent;
 	
 	public class SimpleGestures extends Sprite
 	{
@@ -117,12 +123,50 @@ package
 		
 		private function setupEventListeners():void
 		{
+			plane.addEventListener(MouseEvent3D.CLICK, onClick);
+			plane.addEventListener(GestureEvent3D.GESTURE_PAN, onGesturePan);
+			plane.addEventListener(GestureEvent3D.GESTURE_ROTATE, onGestureRotate);
+			plane.addEventListener(GestureEvent3D.GESTURE_SWIPE, onGestureSwipe);
+			plane.addEventListener(GestureEvent3D.GESTURE_ZOOM, onGestureZoom);
+			
 			// Setup resize handler
 			stage.addEventListener(Event.RESIZE, resizeHandler);
 			resizeHandler(); // Good to run the resizeHandler to ensure everything is in its place
 			
 			// Setup render enter frame event listener
 			stage.addEventListener(Event.ENTER_FRAME,renderHandler);
+		}
+		
+		private function onClick(event:MouseEvent3D):void
+		{
+			trace(this, "click!!!");
+		}
+		
+		private function onGesturePan(event:GestureEvent3D):void
+		{
+			trace(this, "panning!");
+			var target:Object3D = event.object;
+			target.x += event.offsetX; // rd: not sure if this is how you're supposed to use panning gestures
+			target.y -= event.offsetY;
+		}
+		
+		private function onGestureRotate(event:GestureEvent3D):void
+		{
+			var target:Object3D = event.object;
+			target.rotationZ -= event.rotation;
+		}
+		
+		private function onGestureSwipe(event:GestureEvent3D):void
+		{
+			trace(this, "swipped!");
+			var target:Object3D = event.object;
+		}
+		
+		private function onGestureZoom(event:GestureEvent3D):void
+		{
+			var target:Object3D = event.object;
+			target.scaleX *= event.scaleX;
+			target.scaleZ = target.scaleX;
 		}
 		
 		private function renderHandler(e:Event):void
