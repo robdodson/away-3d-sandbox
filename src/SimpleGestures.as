@@ -7,21 +7,12 @@ package
 	import away3d.debug.AwayStats;
 	import away3d.debug.Trident;
 	import away3d.materials.ColorMaterial;
-	import away3d.primitives.Cube;
 	import away3d.primitives.Plane;
-	import away3d.primitives.Sphere;
-	import away3d.primitives.WireframeAxesGrid;
 	
 	import flash.display.Sprite;
-	import flash.display.Stage;
 	import flash.display.StageAlign;
-	import flash.display.StageDisplayState;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TransformGestureEvent;
-	import flash.geom.Point;
-	import flash.geom.Vector3D;
 	
 	public class SimpleGestures extends Sprite
 	{
@@ -31,13 +22,6 @@ package
 		private var camera:Camera3D;
 		private var view:View3D;
 		private var cameraController:HoverController;
-		
-		// Away3D4 Camera handling variables (Hover Camera)
-		private var move:Boolean = false;
-		private var lastPanAngle:Number;
-		private var lastTiltAngle:Number;
-		private var lastMouseX:Number;
-		private var lastMouseY:Number;
 		
 		// Away3D Helpers
 		private var stats:AwayStats;
@@ -133,14 +117,6 @@ package
 		
 		private function setupEventListeners():void
 		{
-			// Setup mesh listeners
-			stage.addEventListener(TransformGestureEvent.GESTURE_ZOOM, onZoom);
-			stage.addEventListener(TransformGestureEvent.GESTURE_ROTATE, onRotate);
-			
-			// Setup event listeners
-			stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
-			stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
-			
 			// Setup resize handler
 			stage.addEventListener(Event.RESIZE, resizeHandler);
 			resizeHandler(); // Good to run the resizeHandler to ensure everything is in its place
@@ -149,53 +125,9 @@ package
 			stage.addEventListener(Event.ENTER_FRAME,renderHandler);
 		}
 		
-		private function onZoom(event:TransformGestureEvent):void
-		{
-			trace(this, "zooooom!");
-			trace("stage coordinates: ", event.stageX - 450, event.stageY - 300);
-			trace("view3D mouse coordinates: ", view.mouseX, view.mouseY);
-			trace("plane position: ", plane.position);
-			//var gesturePosition:Vector3D = new Vector3D(event.stageX - 450, event.stageY - 300, 0);
-			//if (gesturePosition.lengthSquared
-			plane.scaleX *= event.scaleX;
-			plane.scaleZ = plane.scaleX;
-		}
-		
-		private function onRotate(event:TransformGestureEvent):void
-		{
-			plane.rotationZ -= event.rotation
-		}
-		
 		private function renderHandler(e:Event):void
 		{			
-			if (move) {
-				cameraController.panAngle = 0.3 * (stage.mouseX - lastMouseX) + lastPanAngle;
-				cameraController.tiltAngle = 0.3 * (stage.mouseY - lastMouseY) + lastTiltAngle;
-			}
-			
 			view.render();
-		}
-		
-		private function mouseDownHandler(e:MouseEvent):void
-		{
-			lastPanAngle = cameraController.panAngle;
-			lastTiltAngle = cameraController.tiltAngle;
-			lastMouseX = stage.mouseX;
-			lastMouseY = stage.mouseY;
-			move = true;
-			stage.addEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
-		}
-		
-		private function mouseUpHandler(e:MouseEvent):void
-		{
-			move = false;
-			stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
-		}
-		
-		private function onStageMouseLeave(e:Event):void
-		{
-			move = false;
-			stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
 		}
 		
 		private function resizeHandler(e:Event=null):void
