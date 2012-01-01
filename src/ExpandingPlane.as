@@ -21,7 +21,7 @@ package
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
-	public class ZoomablePlane extends Sprite
+	public class ExpandingPlane extends Sprite
 	{
 		//-----------------------------------------------------------------
 		// Away3D4 Vars
@@ -57,7 +57,7 @@ package
 		
 		// --------------------------------------------------------------------------------------------------------------
 		
-		public function ZoomablePlane()
+		public function ExpandingPlane()
 		{
 			// Listen for this to be added to the stage to ensure we have access to the stage
 			this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler, false, 0, true);

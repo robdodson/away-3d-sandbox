@@ -6,22 +6,24 @@ package
 	import away3d.controllers.HoverController;
 	import away3d.debug.AwayStats;
 	import away3d.debug.Trident;
-	import away3d.lights.DirectionalLight;
-	import away3d.materials.ColorMaterial;
-	import away3d.primitives.Cube;
-	import away3d.primitives.Sphere;
-	import away3d.primitives.WireframeAxesGrid;
+	import away3d.events.MouseEvent3D;
+	import away3d.materials.BitmapMaterial;
+	import away3d.materials.InteractiveMaterial;
+	import away3d.primitives.Plane;
 	
+	import com.inchworm.InteractionClip;
+	import com.inchworm.SubInteractionClip;
+	
+	import flash.display.BitmapData;
+	import flash.display.BitmapDataChannel;
 	import flash.display.Sprite;
-	import flash.display.Stage;
 	import flash.display.StageAlign;
 	import flash.display.StageDisplayState;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.geom.Vector3D;
 	
-	public class GestureCamera extends Sprite
+	public class SubMouseInteractionPlane extends Sprite
 	{
 		//-----------------------------------------------------------------
 		// Away3D4 Vars
@@ -45,19 +47,15 @@ package
 		private var cameraViewDistance:Number = 100000;
 		private var antiAlias:Number = 2;
 		
-		// Lights
-		private var directionalLight1:DirectionalLight;
-		
 		// Materials
-		private var cubeAndSphereMaterial:ColorMaterial;
+		private var planeMaterial:BitmapMaterial;
 		
 		// Primitives etc
-		private var cube:Cube;
-		private var sphere:Sphere;
+		private var plane:Plane;
 		
 		// --------------------------------------------------------------------------------------------------------------
 		
-		public function GestureCamera()
+		public function SubMouseInteractionPlane()
 		{
 			// Listen for this to be added to the stage to ensure we have access to the stage
 			this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler, false, 0, true);
@@ -69,7 +67,7 @@ package
 			this.removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
 			
 			// Setup the stage
-			stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+			//stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 			
@@ -81,9 +79,8 @@ package
 		{
 			// Lets get busy
 			setupAway3D4();
-			setupLights();
-			setupMaterials();
 			setupPrimitivesAndModels();
+			setupMaterials();
 			setupEventListeners();
 		}
 		
@@ -118,31 +115,21 @@ package
 			scene.addChild(trident);
 		}
 		
-		private function setupLights():void
+		private function setupPrimitivesAndModels():void
 		{
-			// Setup lights (remember this needs to be added to the materials to be seen)
-			directionalLight1 = new DirectionalLight();
-			scene.addChild(directionalLight1);
+			// Setup the plane
+			plane = new Plane(null, 1024, 1024, 1, 1);
+			plane.rotationX = -90;
+			plane.mouseEnabled = true;
+			plane.mouseDetails = true;
+			scene.addChild(plane);
 		}
 		
 		private function setupMaterials():void
 		{
-			// Setup the cubes material with lights
-			cubeAndSphereMaterial = new ColorMaterial(0xFFFFFF);
-			cubeAndSphereMaterial.lights = [directionalLight1];
-		}
-		
-		private function setupPrimitivesAndModels():void
-		{
-			// Setup the cube
-			cube = new Cube(cubeAndSphereMaterial, 400, 400, 400);
-			cube.x = -300;
-			scene.addChild(cube);
-			
-			// Setup the sphere
-			sphere = new Sphere(cubeAndSphereMaterial,200,16,16);
-			sphere.x = 300;
-			scene.addChild(sphere);
+			// Setup bitmap material
+			planeMaterial = new InteractiveMaterial(plane, new SubInteractionClip());
+			plane.material = planeMaterial;
 		}
 		
 		private function setupEventListeners():void
@@ -157,14 +144,34 @@ package
 			
 			// Setup render enter frame event listener
 			stage.addEventListener(Event.ENTER_FRAME,renderHandler);
+			
+			// Setup plane listeners
+			plane.addEventListener(MouseEvent3D.CLICK, onClick);
+		}
+		
+		private function onClick(e:MouseEvent3D):void
+		{
+			//subInteractionClip.invalidate(e.uv.x * subInteractionClip.width, e.uv.y * subInteractionClip.height);
 		}
 		
 		private function renderHandler(e:Event):void
 		{			
-			if (move) {
+			if (move)
+			{
 				cameraController.panAngle = 0.3 * (stage.mouseX - lastMouseX) + lastPanAngle;
 				cameraController.tiltAngle = 0.3 * (stage.mouseY - lastMouseY) + lastTiltAngle;
 			}
+			
+			//trace(this, mouseX, mouseY);
+			
+			/*
+			if (subInteractionClip.isInvalid)
+			{
+				bmd.draw(subInteractionClip);
+				subInteractionClip.validate();
+				planeMaterial.updateTexture();
+			}
+			*/
 			
 			view.render();
 		}

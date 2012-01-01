@@ -1,8 +1,6 @@
 package
 {
 	import flash.display.Sprite;
-	import flash.text.TextField;
-	import flash.utils.getTimer;
 	
 	[SWF(width="900", height="600", frameRate="60")]
 	public class Main extends Sprite
@@ -58,6 +56,8 @@ package
 			// corresponding x, y position
 			//addChild(new MouseInteractionPlane());
 			
+			addChild(new SubMouseInteractionPlane());
+			
 			// Draw a BitmapMaterial with some text
 			// This example works off of an already
 			// made Flash layout in snippet.fla
@@ -66,11 +66,11 @@ package
 			// Create a BitmapPlane that is a portion of
 			// its max size. When clicked on expand it
 			// to it's max size.
-			//addChild(new ZoomablePlane());
+			//addChild(new ExpandingPlane());
 			
-			addChild(new SimpleGestures());
-			
-			//addChild(new GestureCamera());
+			// Demonstrates the use of Gesture3D events
+			// to manipulate some planes
+			//addChild(new SimpleGestures());
 		}
 	}
 }

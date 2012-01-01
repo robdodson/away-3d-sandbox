@@ -13,11 +13,13 @@ package
 	import away3d.primitives.Plane;
 	
 	import com.gestureworks.cml.element.Gesture;
+	import com.inchworm.util.PerformanceTest;
 	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.events.TransformGestureEvent;
 	
 	public class SimpleGestures extends Sprite
@@ -28,6 +30,13 @@ package
 		private var camera:Camera3D;
 		private var view:View3D;
 		private var cameraController:HoverController;
+		
+		// Away3D4 Camera handling variables (Hover Camera)
+		private var move:Boolean = false;
+		private var lastPanAngle:Number;
+		private var lastTiltAngle:Number;
+		private var lastMouseX:Number;
+		private var lastMouseY:Number;
 		
 		// Away3D Helpers
 		private var stats:AwayStats;
@@ -97,7 +106,7 @@ package
 			stats = new AwayStats(view,true);
 			stats.x = 5;
 			stats.y = 5;
-			this.addChild(stats);
+			//this.addChild(stats);
 			
 			// Show a Trident
 			trident = new Trident();
@@ -125,11 +134,13 @@ package
 			plane2.mouseDetails = true;
 			plane2.x = 1000;
 			plane2.y = 500;
+			plane2.z = 10;
 			scene.addChild(plane2);
 		}
 		
 		private function setupEventListeners():void
 		{
+			// Setup mesh handlers
 			plane1.addEventListener(MouseEvent3D.CLICK, onClick);
 			plane1.addEventListener(GestureEvent3D.GESTURE_PAN, onGesturePan);
 			plane1.addEventListener(GestureEvent3D.GESTURE_ROTATE, onGestureRotate);
@@ -142,12 +153,16 @@ package
 			plane2.addEventListener(GestureEvent3D.GESTURE_SWIPE, onGestureSwipe);
 			plane2.addEventListener(GestureEvent3D.GESTURE_ZOOM, onGestureZoom);
 			
+			// Setup camera handlers
+			stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			
 			// Setup resize handler
-			stage.addEventListener(Event.RESIZE, resizeHandler);
-			resizeHandler(); // Good to run the resizeHandler to ensure everything is in its place
+			stage.addEventListener(Event.RESIZE, onResize);
+			onResize(); // Good to run the resizeHandler to ensure everything is in its place
 			
 			// Setup render enter frame event listener
-			stage.addEventListener(Event.ENTER_FRAME,renderHandler);
+			stage.addEventListener(Event.ENTER_FRAME,onEnterFrame);
 		}
 		
 		private function onClick(event:MouseEvent3D):void
@@ -157,10 +172,10 @@ package
 		
 		private function onGesturePan(event:GestureEvent3D):void
 		{
-			trace(this, "panning!");
 			var target:Object3D = event.object;
-			target.x += event.offsetX; // rd: not sure if this is how you're supposed to use panning gestures
-			target.y -= event.offsetY;
+			event.
+			target.x += event.offsetX * 5; // rd: not sure if this is how you're supposed to use panning gestures
+			target.y -= event.offsetY * 5;
 		}
 		
 		private function onGestureRotate(event:GestureEvent3D):void
@@ -182,12 +197,39 @@ package
 			target.scaleY = target.scaleX;
 		}
 		
-		private function renderHandler(e:Event):void
-		{			
+		private function onMouseDown(e:MouseEvent):void
+		{
+			lastPanAngle = cameraController.panAngle;
+			lastTiltAngle = cameraController.tiltAngle;
+			lastMouseX = stage.mouseX;
+			lastMouseY = stage.mouseY;
+			move = true;
+			stage.addEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
+		}
+		
+		private function onMouseUp(e:MouseEvent):void
+		{
+			move = false;
+			stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
+		}
+		
+		private function onStageMouseLeave(e:Event):void
+		{
+			move = false;
+			stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
+		}
+		
+		private function onEnterFrame(e:Event):void
+		{
+			if (move) {
+				cameraController.panAngle = 0.3 * (stage.mouseX - lastMouseX) + lastPanAngle;
+				cameraController.tiltAngle = 0.3 * (stage.mouseY - lastMouseY) + lastTiltAngle;
+			}
+			
 			view.render();
 		}
 		
-		private function resizeHandler(e:Event=null):void
+		private function onResize(e:Event=null):void
 		{
 			view.width = stage.stageWidth;
 			view.height = stage.stageHeight;

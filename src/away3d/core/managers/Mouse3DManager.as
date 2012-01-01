@@ -85,7 +85,6 @@ package away3d.core.managers
 				queueDispatch(_mouseMove, event);
 		}
 
-
 		arcane function get stage3DProxy() : Stage3DProxy
 		{
 			return _hitTestRenderer.stage3DProxy;
@@ -191,7 +190,6 @@ package away3d.core.managers
 				_hitTestRenderer.update(_view.mouseX / _view.width, _view.mouseY / _view.height, collector);
 				_activeRenderable = _hitTestRenderer.hitRenderable;
 				_activeObject = (_activeRenderable && _activeRenderable.mouseEnabled) ? _activeRenderable.sourceEntity : null;
-				//trace(this, _activeObject);
 			}
 			else {
 				_activeObject = null;
