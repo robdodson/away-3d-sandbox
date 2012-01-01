@@ -44,7 +44,7 @@ package away3d.materials
 			sourceMesh.addEventListener(MouseEvent3D.MOUSE_MOVE, onMouseMove);
 			sourceMesh.addEventListener(MouseEvent3D.MOUSE_OUT, onMouseOut);
 			sourceMesh.addEventListener(MouseEvent3D.MOUSE_UP, onMouseUp);
-			sourceMesh.addEventListener(MouseEvent3D.MOUSE_DOWN, onMouseDown);
+			sourceMesh.addEventListener(MouseEvent3D.MOUSE_DOWN, onMouseDown, false, 0);
 			sourceMesh.addEventListener(MouseEvent3D.CLICK, onMouseClick);
 			sourceMesh.addEventListener(MouseEvent3D.DOUBLE_CLICK, onMouseDoubleClick);
 			sourceMesh.addEventListener(MouseEvent3D.MOUSE_WHEEL, onMouseWheel);
@@ -65,18 +65,25 @@ package away3d.materials
 		
 		protected function onMouseMove(e:MouseEvent3D):void
 		{
+			// Determine the mouse's position on the sourceClip. We'll use UVs to convert
+			// the coordinates to the sourceClip's local coordinate space
+			var pt:Point = new Point(e.uv.x * sourceMovieClip.width, e.uv.y * sourceMovieClip.height);
+			sourceMovieClip.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_MOVE, false, false, pt.x, pt.y));
+			
 			// Set the previousTarget to the activeTarget
 			// so we can create a new activeTarget and see if
 			// they're the same DisplayObject
 			previousTarget = activeTarget;
 			
-			var pt:Point = new Point(e.uv.x * sourceMovieClip.width, e.uv.y * sourceMovieClip.height);
-			for (var i:int = 0; i < sourceMovieClip.numChildren; i++) 
+			// rd: TODO this looks at the children and not the clip itself which might be problematic..
+			// should we add everything to an array and dispatch events for all the displayObjects?
+			for (var i:int = 0; i < sourceMovieClip.numChildren; i++)  
 			{
 				var child:DisplayObject = sourceMovieClip.getChildAt(i);
 				if (pt.x > child.x && pt.x < child.x + child.width && pt.y > child.y && pt.y < child.y + child.height)
 				{
 					activeTarget = child;
+					//activeTarget.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_MOVE));
 				}
 				else
 				{

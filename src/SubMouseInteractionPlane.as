@@ -135,8 +135,8 @@ package
 		private function setupEventListeners():void
 		{
 			// Setup event listeners
-			stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
-			stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+			//stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+			//stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 			
 			// Setup resize handler
 			stage.addEventListener(Event.RESIZE, resizeHandler);
@@ -144,14 +144,6 @@ package
 			
 			// Setup render enter frame event listener
 			stage.addEventListener(Event.ENTER_FRAME,renderHandler);
-			
-			// Setup plane listeners
-			plane.addEventListener(MouseEvent3D.CLICK, onClick);
-		}
-		
-		private function onClick(e:MouseEvent3D):void
-		{
-			//subInteractionClip.invalidate(e.uv.x * subInteractionClip.width, e.uv.y * subInteractionClip.height);
 		}
 		
 		private function renderHandler(e:Event):void
@@ -161,17 +153,6 @@ package
 				cameraController.panAngle = 0.3 * (stage.mouseX - lastMouseX) + lastPanAngle;
 				cameraController.tiltAngle = 0.3 * (stage.mouseY - lastMouseY) + lastTiltAngle;
 			}
-			
-			//trace(this, mouseX, mouseY);
-			
-			/*
-			if (subInteractionClip.isInvalid)
-			{
-				bmd.draw(subInteractionClip);
-				subInteractionClip.validate();
-				planeMaterial.updateTexture();
-			}
-			*/
 			
 			view.render();
 		}

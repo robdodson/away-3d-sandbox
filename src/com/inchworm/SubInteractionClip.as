@@ -51,19 +51,30 @@ package com.inchworm
 		protected function onDummyOut(e:MouseEvent):void
 		{
 			trace(this, "onDummyOut!!!");
+			this.removeEventListener(MouseEvent.MOUSE_MOVE, onDrag);
 			validate();
 		}
 
 		protected function onDummyUp(e:MouseEvent):void
 		{
 			trace(this, "onDummyUp!!!");
+			this.removeEventListener(MouseEvent.MOUSE_MOVE, onDrag);
 			validate();
 		}
 
 		protected function onDummyDown(e:MouseEvent):void
 		{
 			trace(this, "onDummyDown!!!");
+			this.addEventListener(MouseEvent.MOUSE_MOVE, onDrag);
 			invalidate();
+		}
+		
+		private function onDrag(e:MouseEvent):void
+		{
+			trace(this, e.localX, e.localY);
+			e.stopImmediatePropagation();
+			dummyButton.x = e.localX - dummyButton.width / 2;
+			dummyButton.y = e.localY - dummyButton.height / 2;
 		}
 		
 		protected function onDummyClick(e:MouseEvent):void
