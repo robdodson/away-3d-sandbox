@@ -71,8 +71,6 @@ package com.inchworm
 		
 		private function onDrag(e:MouseEvent):void
 		{
-			trace(this, e.localX, e.localY);
-			e.stopImmediatePropagation();
 			dummyButton.x = e.localX - dummyButton.width / 2;
 			dummyButton.y = e.localY - dummyButton.height / 2;
 		}
@@ -85,6 +83,16 @@ package com.inchworm
 		protected function onDummyDoubleClick(e:MouseEvent):void
 		{
 			trace(this, "onDummyDoubleClick!");
+			var rnd:int = Math.random() * 5 + 1;
+			if (rnd == dummyButton.scaleX) rnd += 1;
+			
+			TweenLite.to(dummyButton, .5, {
+				scaleX: rnd,
+				scaleY: rnd,
+				ease: Back.easeInOut,
+				onStart: invalidate,
+				onComplete: validate
+			}); // rd: TODO look out for weird UV issues on the edges..
 		}
 
 		protected function onDummyWheel(e:MouseEvent):void
