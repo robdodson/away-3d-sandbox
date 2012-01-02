@@ -49,6 +49,12 @@ package
 			// work on my MacBook Air
 			//addChild(new LotsOfTransparentBitmaps());
 			
+			
+			// Draw a BitmapMaterial with some text
+			// This example works off of an already
+			// made Flash layout in snippet.fla
+			//addChild(new BitmapTextPlane());
+			
 			// Draw a plane that registers the mouse
 			// position when it is clicked. Translate
 			// the uv coords to the underlying movieclip
@@ -56,21 +62,19 @@ package
 			// corresponding x, y position
 			//addChild(new MouseInteractionPlane());
 			
-			addChild(new SubMouseInteractionPlane());
-			
-			// Draw a BitmapMaterial with some text
-			// This example works off of an already
-			// made Flash layout in snippet.fla
-			//addChild(new BitmapTextPlane());
-			
 			// Create a BitmapPlane that is a portion of
 			// its max size. When clicked on expand it
 			// to it's max size.
 			//addChild(new ExpandingPlane());
 			
+			// Continuation of the previous example.
+			// This time use the new InteractiveMaterial
+			// to do interactions within the material
+			//addChild(new SubMouseInteractionPlane());
+			
 			// Demonstrates the use of Gesture3D events
 			// to manipulate some planes
-			//addChild(new SimpleGestures());
+			addChild(new SimpleGestures());
 		}
 	}
 }
