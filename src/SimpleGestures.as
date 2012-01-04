@@ -12,15 +12,12 @@ package
 	import away3d.materials.ColorMaterial;
 	import away3d.primitives.Plane;
 	
-	import com.gestureworks.cml.element.Gesture;
-	import com.inchworm.util.PerformanceTest;
-	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
+	import flash.display.StageDisplayState;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.events.TransformGestureEvent;
 	
 	public class SimpleGestures extends Sprite
 	{
@@ -66,7 +63,7 @@ package
 			this.removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
 			
 			// Setup the stage
-			//stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+			stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 			
@@ -173,7 +170,6 @@ package
 		private function onGesturePan(event:GestureEvent3D):void
 		{
 			var target:Object3D = event.object;
-			event.
 			target.x += event.offsetX * 5; // rd: not sure if this is how you're supposed to use panning gestures
 			target.y -= event.offsetY * 5;
 		}
@@ -192,6 +188,7 @@ package
 		
 		private function onGestureZoom(event:GestureEvent3D):void
 		{
+			trace(this, event.scaleX);
 			var target:Object3D = event.object;
 			target.scaleX *= event.scaleX;
 			target.scaleY = target.scaleX;

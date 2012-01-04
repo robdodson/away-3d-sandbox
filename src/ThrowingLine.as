@@ -6,8 +6,10 @@ package
 	import away3d.controllers.HoverController;
 	import away3d.debug.AwayStats;
 	import away3d.debug.Trident;
+	import away3d.entities.SegmentSet;
 	import away3d.materials.ColorMaterial;
 	import away3d.primitives.Cube;
+	import away3d.primitives.LineSegment;
 	import away3d.primitives.Plane;
 	import away3d.primitives.Sphere;
 	import away3d.primitives.WireframeAxesGrid;
@@ -21,7 +23,7 @@ package
 	import flash.events.MouseEvent;
 	import flash.geom.Vector3D;
 	
-	public class SimplePlane extends Sprite
+	public class ThrowingLine extends Sprite
 	{
 		//-----------------------------------------------------------------
 		// Away3D4 Vars
@@ -29,13 +31,6 @@ package
 		private var camera:Camera3D;
 		private var view:View3D;
 		private var cameraController:HoverController;
-		
-		// Away3D4 Camera handling variables (Hover Camera)
-		private var move:Boolean = false;
-		private var lastPanAngle:Number;
-		private var lastTiltAngle:Number;
-		private var lastMouseX:Number;
-		private var lastMouseY:Number;
 		
 		// Away3D Helpers
 		private var stats:AwayStats;
@@ -45,15 +40,26 @@ package
 		private var cameraViewDistance:Number = 100000;
 		private var antiAlias:Number = 2;
 		
-		// Materials
-		private var planeMaterial:ColorMaterial;
-		
 		// Primitives etc
-		private var plane:Plane;
+		private var lines:SegmentSet;
+		private var timelineSegment:LineSegment;
+		private var datelineSegment:LineSegment;
+		
+		// Vectors
+		private var datelineStart:Vector3D;
+		private var datelineEnd:Vector3D;
+		
+		// Velocity
+		private var vx:Number = 0;
+		private var oldX:Number = 0;
+		private var friction:Number = 0.9;
+		
+		// Mouse Controls
+		private var isDragging:Boolean;
 		
 		// --------------------------------------------------------------------------------------------------------------
 		
-		public function SimplePlane()
+		public function ThrowingLine()
 		{
 			// Listen for this to be added to the stage to ensure we have access to the stage
 			this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler, false, 0, true);
@@ -77,7 +83,6 @@ package
 		{
 			// Lets get busy
 			setupAway3D4();
-			setupMaterials();
 			setupPrimitivesAndModels();
 			setupEventListeners();
 		}
@@ -99,7 +104,7 @@ package
 			addChild(view);
 			
 			// Setup a HoverController (aka HoverCamera3D in older versions of Away3D)
-			cameraController = new HoverController(camera, null, 150, 10, 2000);
+			cameraController = new HoverController(camera, null, 180.3, 1.5, 100);
 			
 			// Show Away3D stats
 			stats = new AwayStats(view,true);
@@ -108,23 +113,41 @@ package
 			this.addChild(stats);
 			
 			// Show a Trident
-			trident = new Trident();
-			trident.scale(1);
-			scene.addChild(trident);
-		}
-		
-		private function setupMaterials():void
-		{
-			// Setup the cubes material with lights
-			planeMaterial = new ColorMaterial(0xFFFFFF);
+			//trident = new Trident();
+			//trident.scale(1);
+			//scene.addChild(trident);
 		}
 		
 		private function setupPrimitivesAndModels():void
 		{
-			// Setup the plane
-			plane = new Plane(planeMaterial, 500, 500);
-			plane.rotationX = -90;
-			scene.addChild(plane);
+			// Setup the primitive
+			lines = new SegmentSet();
+			scene.addChild(lines);
+			
+			/*
+			// Add lots of lines to the segment set
+			var i:uint = 0;
+			var vx:Number = 0;
+			var vz:Number = 0;
+			for (i = 0; i <= 360; i+=5)
+			{
+				vx = Math.sin(i*0.0174532925) * 500;
+				vz = Math.cos(i*0.0174532925) * 500;
+				
+				lineSegment = new LineSegment(new Vector3D(0,0,0),new Vector3D(vx,0,vz),0xFFFFFF,0xFFFF00,4);
+				lines.addSegment(lineSegment);
+				
+				lineSegment = new LineSegment(new Vector3D(0,0,0),new Vector3D(0,vx,vz),0xFFFFFF,0xFF0000,2);
+				lines.addSegment(lineSegment);
+			}
+			*/
+			
+			timelineSegment = new LineSegment(new Vector3D(-10000, 0, 0), new Vector3D(10000, 0, 0), 0xFFFFFF, 0xFFFFFF, 4);
+			datelineStart = new Vector3D(0, -500, 0);
+			datelineEnd = new Vector3D(0, 500, 0);
+			datelineSegment = new LineSegment(datelineStart, datelineEnd, 0xFFFFFF, 0xFFFFFF, 2);
+			lines.addSegment(timelineSegment);
+			lines.addSegment(datelineSegment);
 		}
 		
 		private function setupEventListeners():void
@@ -142,36 +165,40 @@ package
 		}
 		
 		private function renderHandler(e:Event):void
-		{			
-			if (move) {
-				cameraController.panAngle = 0.3 * (stage.mouseX - lastMouseX) + lastPanAngle;
-				cameraController.tiltAngle = 0.3 * (stage.mouseY - lastMouseY) + lastTiltAngle;
-				trace(this, "pan angle", cameraController.panAngle);
-				trace(this, "tilt angle", cameraController.tiltAngle);
+		{
+			if (isDragging)
+			{
+				datelineStart.x = datelineEnd.x = 180 * (stage.mouseX / stage.stageWidth) - 90; // TODO need to nail down this ratio of camera viewing angle to stage width
+				vx = datelineStart.x - oldX;
+				oldX = datelineStart.x;
 			}
-			
+			else
+			{
+				vx *= friction;
+				datelineStart.x += vx;
+				datelineEnd.x = datelineStart.x;
+			}
+
+			datelineSegment.updateSegment(datelineStart, datelineEnd, new Vector3D(0, 0, 0), 0xFFFFFF, 0xFFFFFF, 2);
 			view.render();
 		}
 		
 		private function mouseDownHandler(e:MouseEvent):void
 		{
-			lastPanAngle = cameraController.panAngle;
-			lastTiltAngle = cameraController.tiltAngle;
-			lastMouseX = stage.mouseX;
-			lastMouseY = stage.mouseY;
-			move = true;
+			oldX = datelineStart.x;
+			isDragging = true;
 			stage.addEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
 		}
 		
 		private function mouseUpHandler(e:MouseEvent):void
 		{
-			move = false;
+			isDragging = false;
 			stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
 		}
 		
 		private function onStageMouseLeave(e:Event):void
 		{
-			move = false;
+			isDragging = false;
 			stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
 		}
 		

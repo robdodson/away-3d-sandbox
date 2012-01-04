@@ -74,7 +74,10 @@ package
 			
 			// Demonstrates the use of Gesture3D events
 			// to manipulate some planes
-			addChild(new SimpleGestures());
+			//addChild(new SimpleGestures());
+			
+			// Basic line drawing using segments
+			addChild(new ThrowingLine);
 		}
 	}
 }
