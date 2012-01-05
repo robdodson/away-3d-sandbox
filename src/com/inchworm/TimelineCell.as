@@ -21,9 +21,9 @@ package com.inchworm
 		{
 			super();
 			
-			_width = 30;
-			_startLine = new LineSegment(new Vector3D(0, -100, 0), new Vector3D(0, 100, 0), 0xFFFFFF, 0xFFFFFF, 4);
-			_endLine = new LineSegment(new Vector3D(_width, -100, 0), new Vector3D(_width, 100, 0), 0xFFFFFF, 0xFFFFFF, 4);
+			_width = 10;
+			_startLine = new LineSegment(new Vector3D(0, -100, 0), new Vector3D(0, 100, 0), 0x00FF00, 0x00FF00, 4);
+			_endLine = new LineSegment(new Vector3D(_width, -100, 0), new Vector3D(_width, 100, 0), 0xFF0000, 0xFF0000, 4);
 			_lines = new SegmentSet();
 			_lines.addSegment(_startLine);
 			_lines.addSegment(_endLine);
