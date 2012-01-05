@@ -14,6 +14,8 @@ package
 	import away3d.primitives.Sphere;
 	import away3d.primitives.WireframeAxesGrid;
 	
+	import com.inchworm.TimelineCell;
+	
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.display.StageAlign;
@@ -23,7 +25,7 @@ package
 	import flash.events.MouseEvent;
 	import flash.geom.Vector3D;
 	
-	public class ThrowingLine extends Sprite
+	public class BasicTimelineLayout extends Sprite
 	{
 		//-----------------------------------------------------------------
 		// Away3D4 Vars
@@ -41,9 +43,8 @@ package
 		private var antiAlias:Number = 2;
 		
 		// Primitives etc
-		private var lines:SegmentSet;
-		private var timelineSegment:LineSegment;
-		private var datelineSegment:LineSegment;
+		private var numCells:int = 6;
+		private var cells:Array;
 		
 		// Vectors
 		private var datelineStart:Vector3D;
@@ -59,7 +60,7 @@ package
 		
 		// --------------------------------------------------------------------------------------------------------------
 		
-		public function ThrowingLine()
+		public function BasicTimelineLayout()
 		{
 			// Listen for this to be added to the stage to ensure we have access to the stage
 			this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler, false, 0, true);
@@ -120,34 +121,21 @@ package
 		
 		private function setupPrimitivesAndModels():void
 		{
-			// Setup the primitive
-			lines = new SegmentSet();
-			scene.addChild(lines);
+			// Setup the primitives
+			cells = new Array();
+			var firstCell:TimelineCell = new TimelineCell();
+			firstCell.x = -100;
+			cells.push(firstCell);
+			scene.addChild(firstCell);
 			
-			/*
-			// Add lots of lines to the segment set
-			var i:uint = 0;
-			var vx:Number = 0;
-			var vz:Number = 0;
-			for (i = 0; i <= 360; i+=5)
+			for (var i:int = 1; i < numCells; i++) 
 			{
-				vx = Math.sin(i*0.0174532925) * 500;
-				vz = Math.cos(i*0.0174532925) * 500;
-				
-				lineSegment = new LineSegment(new Vector3D(0,0,0),new Vector3D(vx,0,vz),0xFFFFFF,0xFFFF00,4);
-				lines.addSegment(lineSegment);
-				
-				lineSegment = new LineSegment(new Vector3D(0,0,0),new Vector3D(0,vx,vz),0xFFFFFF,0xFF0000,2);
-				lines.addSegment(lineSegment);
+				var cell:TimelineCell = new TimelineCell();
+				var prevCell:TimelineCell = cells[i - 1];
+				cell.x = prevCell.x + prevCell.width; 
+				cells.push(cell);
+				scene.addChild(cell);
 			}
-			*/
-			
-			timelineSegment = new LineSegment(new Vector3D(-10000, 0, 0), new Vector3D(10000, 0, 0), 0xFFFFFF, 0xFFFFFF, 4);
-			datelineStart = new Vector3D(0, -500, 0);
-			datelineEnd = new Vector3D(0, 500, 0);
-			datelineSegment = new LineSegment(datelineStart, datelineEnd, 0xFFFFFF, 0xFFFFFF, 2);
-			lines.addSegment(timelineSegment);
-			lines.addSegment(datelineSegment);
 		}
 		
 		private function setupEventListeners():void
@@ -166,6 +154,7 @@ package
 		
 		private function renderHandler(e:Event):void
 		{
+			/*
 			if (isDragging)
 			{
 				datelineStart.x = datelineEnd.x = 180 * (stage.mouseX / stage.stageWidth) - 90; // TODO need to nail down this ratio of camera viewing angle to stage width
@@ -190,26 +179,27 @@ package
 			}
 			
 			datelineSegment.updateSegment(datelineStart, datelineEnd, new Vector3D(0, 0, 0), 0xFFFFFF, 0xFFFFFF, 2);
+			*/
 			view.render();
 		}
 		
 		private function mouseDownHandler(e:MouseEvent):void
 		{
-			oldX = datelineStart.x;
-			isDragging = true;
-			stage.addEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
+			//oldX = datelineStart.x;
+			//isDragging = true;
+			//stage.addEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
 		}
 		
 		private function mouseUpHandler(e:MouseEvent):void
 		{
-			isDragging = false;
-			stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
+			//isDragging = false;
+			//stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
 		}
 		
 		private function onStageMouseLeave(e:Event):void
 		{
-			isDragging = false;
-			stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
+			//isDragging = false;
+			//stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
 		}
 		
 		private function resizeHandler(e:Event=null):void

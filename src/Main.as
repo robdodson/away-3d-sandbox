@@ -77,7 +77,15 @@ package
 			//addChild(new SimpleGestures());
 			
 			// Basic line drawing using segments
-			addChild(new ThrowingLine);
+			//addChild(new ThrowingLine);
+			
+			// Use TimelineCells to create a date range of sorts
+			//addChild(new BasicTimelineLayout());
+			
+			// Same example as the previous screen but now you can
+			// drag the cells around. When a cell goes off screen
+			// a new cell comes on to replace it
+			addChild(new DraggableTimeline());
 		}
 	}
 }
