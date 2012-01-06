@@ -130,7 +130,7 @@ package
 			stage.addEventListener(Event.ENTER_FRAME,renderHandler);
 		}
 		
-		private function renderHandler(e:Event):void
+		private function renderHandler(e:Event):void // TODO: Break this into separate handlers
 		{
 			if (isDragging)
 			{

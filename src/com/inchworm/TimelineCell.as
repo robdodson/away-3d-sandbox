@@ -13,6 +13,7 @@ package com.inchworm
 		private var _lines					:SegmentSet;
 		private var _startLine				:LineSegment;
 		private var _endLine				:LineSegment;
+		private var _lineWidth				:Number;
 		private var _width					:Number;
 		
 		//-----------------------------------------------------------------
@@ -21,9 +22,10 @@ package com.inchworm
 		{
 			super();
 			
-			_width = 10;
-			_startLine = new LineSegment(new Vector3D(0, -100, 0), new Vector3D(0, 100, 0), 0x00FF00, 0x00FF00, 4);
-			_endLine = new LineSegment(new Vector3D(_width, -100, 0), new Vector3D(_width, 100, 0), 0xFF0000, 0xFF0000, 4);
+			_lineWidth = 1;
+			_width = 30;
+			_startLine = new LineSegment(new Vector3D(0, -100, 0), new Vector3D(0, 100, 0), 0xFFFFFF, 0xFFFFFF, _lineWidth);
+			_endLine = new LineSegment(new Vector3D(_width, -100, 0), new Vector3D(_width, 100, 0), 0xFFFFFF, 0xFFFFFF, _lineWidth);
 			_lines = new SegmentSet();
 			_lines.addSegment(_startLine);
 			_lines.addSegment(_endLine);

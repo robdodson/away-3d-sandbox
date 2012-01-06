@@ -1,5 +1,7 @@
 package
 {
+	import com.inchworm.lists.LinkedList;
+	
 	import flash.display.Sprite;
 	
 	[SWF(width="900", height="600", frameRate="60")]
@@ -28,7 +30,7 @@ package
 			
 			// Draw a simple plane in 3D space
 			// with a hover camera
-			//addChild(new SimplePlane());
+			addChild(new SimplePlane());
 			
 			// Draw an animating movieclip
 			// onto a bitmap material and
@@ -81,6 +83,11 @@ package
 			
 			// Use TimelineCells to create a date range of sorts
 			//addChild(new BasicTimelineLayout());
+			
+			// Demonstrates the use of the DLinkedList library. Doesn't
+			// really pertain to Away3D but it's used in the DraggableTimeline
+			// sketch
+			//addChild(new LinkedListIteration());
 			
 			// Same example as the previous screen but now you can
 			// drag the cells around. When a cell goes off screen
