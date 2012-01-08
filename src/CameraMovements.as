@@ -1,43 +1,29 @@
-package 
+package
 {
 	import away3d.cameras.Camera3D;
 	import away3d.containers.Scene3D;
 	import away3d.containers.View3D;
 	import away3d.controllers.HoverController;
-	import away3d.debug.AwayStats;
-	import away3d.debug.Trident;
-	import away3d.entities.SegmentSet;
-	import away3d.materials.ColorMaterial;
-	import away3d.primitives.Cube;
-	import away3d.primitives.LineSegment;
-	import away3d.primitives.Plane;
-	import away3d.primitives.Sphere;
-	import away3d.primitives.WireframeAxesGrid;
 	
 	import com.inchworm.Timeline;
-	import com.inchworm.TimelineCell;
 	
 	import flash.display.Sprite;
-	import flash.display.Stage;
 	import flash.display.StageAlign;
 	import flash.display.StageDisplayState;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.geom.Vector3D;
 	
-	public class DraggableTimeline extends Sprite
+	import uk.co.soulwire.gui.SimpleGUI;
+	
+	public class CameraMovements extends Sprite
 	{
 		//-----------------------------------------------------------------
 		// Away3D4 Vars
-		private var scene:Scene3D;
-		private var camera:Camera3D;
-		private var view:View3D;
-		private var cameraController:HoverController;
-		
-		// Away3D Helpers
-		private var stats:AwayStats;
-		private var trident:Trident;
+		public var scene:Scene3D;
+		public var camera:Camera3D;
+		public var view:View3D;
+		public var cameraController:HoverController;
 		
 		// Away3D Config
 		private var cameraViewDistance:Number = 100000;
@@ -56,8 +42,13 @@ package
 		
 		// -----------------------------------------------------------------
 		
-		public function DraggableTimeline()
+		private var _gui:SimpleGUI;
+		public var obj:Object;
+		
+		public function CameraMovements()
 		{
+			super();
+
 			// Listen for this to be added to the stage to ensure we have access to the stage
 			this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler, false, 0, true);
 		}
@@ -82,6 +73,7 @@ package
 			setupAway3D4();
 			setupPrimitivesAndModels();
 			setupEventListeners();
+			setupGUI();
 		}
 		
 		private function setupAway3D4():void
@@ -102,12 +94,6 @@ package
 			
 			// Setup a HoverController (aka HoverCamera3D in older versions of Away3D)
 			cameraController = new HoverController(camera, null, -220, 0.1, 100);
-			
-			// Show Away3D stats
-			stats = new AwayStats(view,true);
-			stats.x = 5;
-			stats.y = 5;
-			this.addChild(stats);
 		}
 		
 		private function setupPrimitivesAndModels():void
@@ -171,6 +157,19 @@ package
 		{
 			view.width = stage.stageWidth;
 			view.height = stage.stageHeight;
+		}
+		
+		private function setupGUI():void
+		{
+			_gui = new SimpleGUI(this, "Camera Controls", "c");
+			_gui.addGroup("Camera");
+			_gui.addStepper("camera.x", -5000, 5000);
+			_gui.addStepper("camera.y", -5000, 5000);
+			_gui.addStepper("camera.z", -5000, 5000);
+			_gui.addColumn("Camera Controller");
+			_gui.addStepper("cameraController.distance", 0, 5000, {label: "Distance"});
+			_gui.addStepper("cameraController.panAngle", -360, 360, {label: "Pan Angle"});
+			_gui.addStepper("cameraController.tiltAngle", -360, 360, {label: "Tilt Angle"});
 		}
 	}
 }

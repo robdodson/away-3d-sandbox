@@ -23,7 +23,7 @@ package com.inchworm
 			super();
 			
 			_lineWidth = 1;
-			_width = 30;
+			_width = 100;
 			_startLine = new LineSegment(new Vector3D(0, -100, 0), new Vector3D(0, 100, 0), 0xFFFFFF, 0xFFFFFF, _lineWidth);
 			_endLine = new LineSegment(new Vector3D(_width, -100, 0), new Vector3D(_width, 100, 0), 0xFFFFFF, 0xFFFFFF, _lineWidth);
 			_lines = new SegmentSet();

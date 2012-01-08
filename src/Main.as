@@ -30,7 +30,7 @@ package
 			
 			// Draw a simple plane in 3D space
 			// with a hover camera
-			addChild(new SimplePlane());
+			//addChild(new SimplePlane());
 			
 			// Draw an animating movieclip
 			// onto a bitmap material and
@@ -92,7 +92,10 @@ package
 			// Same example as the previous screen but now you can
 			// drag the cells around. When a cell goes off screen
 			// a new cell comes on to replace it
-			addChild(new DraggableTimeline());
+			//addChild(new DraggableTimeline());
+			
+			// Camera movements
+			addChild(new CameraMovements());
 		}
 	}
 }
