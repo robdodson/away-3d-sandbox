@@ -49,7 +49,7 @@ package
 			// Draw tons of transparent planes on
 			// screen to test GPU performance. Doesn't
 			// work on my MacBook Air
-			addChild(new LotsOfTransparentBitmaps());
+			//addChild(new LotsOfTransparentBitmaps());
 			
 			
 			// Draw a BitmapMaterial with some text
@@ -93,6 +93,9 @@ package
 			// drag the cells around. When a cell goes off screen
 			// a new cell comes on to replace it
 			//addChild(new DraggableTimeline());
+			
+			// Camera movements
+			addChild(new CameraMovements());
 		}
 	}
 }
