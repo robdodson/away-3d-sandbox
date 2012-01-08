@@ -30,7 +30,7 @@ package
 			
 			// Draw a simple plane in 3D space
 			// with a hover camera
-			addChild(new SimplePlane());
+			//addChild(new SimplePlane());
 			
 			// Draw an animating movieclip
 			// onto a bitmap material and
@@ -49,7 +49,7 @@ package
 			// Draw tons of transparent planes on
 			// screen to test GPU performance. Doesn't
 			// work on my MacBook Air
-			//addChild(new LotsOfTransparentBitmaps());
+			addChild(new LotsOfTransparentBitmaps());
 			
 			
 			// Draw a BitmapMaterial with some text
@@ -92,7 +92,7 @@ package
 			// Same example as the previous screen but now you can
 			// drag the cells around. When a cell goes off screen
 			// a new cell comes on to replace it
-			addChild(new DraggableTimeline());
+			//addChild(new DraggableTimeline());
 		}
 	}
 }

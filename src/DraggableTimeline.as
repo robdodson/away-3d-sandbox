@@ -14,8 +14,8 @@ package
 	import away3d.primitives.Sphere;
 	import away3d.primitives.WireframeAxesGrid;
 	
-	import com.inchworm.Timeline;
-	import com.inchworm.TimelineCell;
+	import com.inchworm.TimelineView;
+	import com.inchworm.TimelineCellView;
 	
 	import flash.display.Sprite;
 	import flash.display.Stage;
@@ -44,7 +44,7 @@ package
 		private var antiAlias:Number = 2;
 		
 		// Primitives etc
-		private var timeline:Timeline;
+		private var timeline:TimelineView;
 		
 		// Velocity
 		private var vx					:Number = 0;
@@ -112,7 +112,7 @@ package
 		
 		private function setupPrimitivesAndModels():void
 		{
-			timeline = new Timeline();
+			timeline = new TimelineView();
 			scene.addChild(timeline);
 		}
 		

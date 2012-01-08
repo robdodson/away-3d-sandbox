@@ -14,7 +14,7 @@ package
 	import away3d.primitives.Sphere;
 	import away3d.primitives.WireframeAxesGrid;
 	
-	import com.inchworm.TimelineCell;
+	import com.inchworm.TimelineCellView;
 	
 	import flash.display.Sprite;
 	import flash.display.Stage;
@@ -123,15 +123,15 @@ package
 		{
 			// Setup the primitives
 			cells = new Array();
-			var firstCell:TimelineCell = new TimelineCell();
+			var firstCell:TimelineCellView = new TimelineCellView();
 			firstCell.x = -100;
 			cells.push(firstCell);
 			scene.addChild(firstCell);
 			
 			for (var i:int = 1; i < numCells; i++) 
 			{
-				var cell:TimelineCell = new TimelineCell();
-				var prevCell:TimelineCell = cells[i - 1];
+				var cell:TimelineCellView = new TimelineCellView();
+				var prevCell:TimelineCellView = cells[i - 1];
 				cell.x = prevCell.x + prevCell.width; 
 				cells.push(cell);
 				scene.addChild(cell);
