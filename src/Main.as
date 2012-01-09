@@ -39,7 +39,7 @@ package
 			
 			// Draw several planes all running
 			// off of the same MovieClip texture
-			//addChild(new LotsOfBitmapPlanes());
+			addChild(new LotsOfBitmapPlanes());
 			
 			// Draw 100 random motion clips, with 100
 			// unique bitmap draw calls, to 100 bitmapMaterials
@@ -50,7 +50,6 @@ package
 			// screen to test GPU performance. Doesn't
 			// work on my MacBook Air
 			//addChild(new LotsOfTransparentBitmaps());
-			
 			
 			// Draw a BitmapMaterial with some text
 			// This example works off of an already
@@ -95,7 +94,7 @@ package
 			//addChild(new DraggableTimeline());
 			
 			// Camera movements
-			addChild(new CameraMovements());
+			//addChild(new CameraMovements());
 		}
 	}
 }

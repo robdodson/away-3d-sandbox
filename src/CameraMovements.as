@@ -5,7 +5,7 @@ package
 	import away3d.containers.View3D;
 	import away3d.controllers.HoverController;
 	
-	import com.inchworm.Timeline;
+	import com.inchworm.TimelineView;
 	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -30,7 +30,7 @@ package
 		private var antiAlias:Number = 2;
 		
 		// Primitives etc
-		private var timeline:Timeline;
+		private var timeline:TimelineView;
 		
 		// Velocity
 		private var vx					:Number = 0;
@@ -98,7 +98,7 @@ package
 		
 		private function setupPrimitivesAndModels():void
 		{
-			timeline = new Timeline();
+			timeline = new TimelineView();
 			scene.addChild(timeline);
 		}
 		
