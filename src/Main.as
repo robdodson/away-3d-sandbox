@@ -95,7 +95,10 @@ package
 			//addChild(new DraggableTimeline());
 			
 			// Camera movements
-			addChild(new CameraMovements());
+			//addChild(new CameraMovements());
+			
+			// Masonry InteractiveSpritePlanes
+			addChild(new MasonryInteractiveSpritePlanes());
 		}
 	}
 }
