@@ -29,6 +29,9 @@ package com.app
 		private var cellsWide:uint;
 		private var cellsHigh:uint;
 		
+		private var centerX:uint;
+		private var centerY:uint;
+		
 		private const whichApproach:String = "BIAS";
 		private const e:Number = 2.71828183;
 		
@@ -46,6 +49,8 @@ package com.app
 			cellPaddingX = _cellPaddingX;
 			cellPaddingY = _cellPaddingY;
 			
+			
+			
 			// define our 2d array, setting a boolean value for "full" and defining each cell's x/y position in the grid
 			grid = new Array();
 			
@@ -55,6 +60,8 @@ package com.app
 					grid[i][j] = { full:false, x: (i * (cellWidth + cellPaddingX)), y: (j * (cellHeight + cellPaddingY)), weight:0 };
 				}
 			}
+			
+			
 			
 			/*
 			// nice touch but we don't need it yet
@@ -113,6 +120,43 @@ package com.app
 			}
 		}
 		
+		public function get centerXInCells():uint{
+			return(Math.round(colCount/2));
+		}
+		public function set centerXInCells(n:uint):void{
+			
+		}
+		public function get centerYInCells():uint{
+			return(Math.round(rowCount/2));
+		}
+		public function set centerYInCells(n:uint):void{
+			
+		}
+		public function get centerXInSnappedUnits():Number{
+			return(Math.round(colCount/2) * (cellWidth * cellPaddingX));
+		}
+		public function set centerXInSnappedUnits(n:Number):void{
+			
+		}
+		public function get centerYInSnappedUnits():Number{
+			return(Math.round(colCount/2) * (cellWidth * cellPaddingX));
+		}
+		public function set centerYInSnappedUnits(n:Number):void{
+			
+		}
+		public function get centerXInExactUnits():Number{
+			return((colCount/2) * (cellWidth * cellPaddingX));
+		}
+		public function set centerXInExactUnits(n:Number):void{
+			
+		}
+		public function get centerYInExactUnits():Number{
+			return((rowCount/2) * (cellHeight * cellPaddingY));
+		}
+		public function set centerYInExactUnits(n:Number):void{
+			
+		}
+		
 		
 		// this should be called if you want to refresh the grid after placing some items
 		public function clearGrid():void{
@@ -135,14 +179,16 @@ package com.app
 				cellsWide = Math.ceil(items[i].width / (cellWidth + cellPaddingX));
 				cellsHigh = Math.ceil(items[i].height / (cellHeight + cellPaddingY));
 				
+				centerX = Math.round(colCount/2 - cellsWide/2);
+				centerY = Math.round(rowCount/2 - cellsHigh/2);
+				
+				
 				// find the item a home
 				switch(whichApproach){
 					case "BIAS":
 						
 						if (i == 0){
 							// first item, position near the center, somewhat randomly
-							var centerX:uint = Math.round(colCount/2 - cellsWide/2);
-							var centerY:uint = Math.round(rowCount/2 - cellsHigh/2);
 							firstItem = { item: items[0], x: centerX + (Math.round((Math.random() * 3) - 1.5)), y: centerY + (Math.round((Math.random() * 3) - 1.5)), cellsWide: cellsWide, cellsHigh: cellsHigh  }
 							placeItem(items[i], firstItem.x, firstItem.y);
 						} else {
