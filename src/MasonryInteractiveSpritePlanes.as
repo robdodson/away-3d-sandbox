@@ -163,7 +163,9 @@ package
 			cellIndex = 0;
 			lastX = 0;
 			
-			layout = new MasonryLayout(12,8,145,145,10,10);
+			// Instantiate layout - can be reused if we're sticking with the same dimensions each time.
+			// args: numCols, numRows, cellWidth, cellHeight, paddingX, paddingY
+			layout = new MasonryLayout(12,6,145,145,10,10);
 			
 			cells.push(new ObjectContainer3D());
 			container.addChild(cells[cellIndex]);
@@ -230,9 +232,15 @@ package
 			do {
 				var d:Date = new Date();
 				trace("** STARTING LAYOUT "+cellIndex+" -- ms: "+d.milliseconds);
+				
 				layout.clearGrid();
 				
+				// will return the index in your array where you ran out of room.
+				// feel free to change that to a vector if you like...
 				var amountSuccessfullyPlacedThisCell:uint = layout.placeItems(spritePlanes);
+				
+				
+				
 				d = new Date();
 				trace("** ENDING LAYOUT "+cellIndex+" -- ms: "+d.milliseconds);
 				
@@ -242,6 +250,7 @@ package
 					cells[cellIndex].addChild(spritePlanes[i]);
 				}
 				spritePlanes.splice(0,amountSuccessfullyPlacedThisCell);
+				
 				
 				Bounds.getObjectContainerBounds(cells[cellIndex]);
 				trace("bounds: "+Bounds);
@@ -253,7 +262,7 @@ package
 				
 				cells[cellIndex].x = lastX;
 				trace("lastX: "+lastX);
-				lastX = lastX + width + 100;
+				lastX = lastX + width + 300;
 				//cells[cellIndex].y = (height / 2);
 				
 				if (spritePlanes.length > 0){

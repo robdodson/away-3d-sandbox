@@ -9,8 +9,6 @@ package com.app
 	{
 		public var rowCount:uint;
 		public var colCount:uint;
-		public var rowCountMin1:uint;
-		public var colCountMin1:uint;
 		public var cellWidth:uint;		// cell width not counting padding
 		public var cellHeight:uint;		// cell height not counting padding
 		public var cellPaddingX:uint;
@@ -39,12 +37,10 @@ package com.app
 		private const RIGHT:String = "RIGHT";
 		private const LEFT:String = "LEFT";
 		
-		public function MasonryLayout(_rowCount:uint=10, _colCount:uint=10, _cellWidth:uint=100, _cellHeight:uint=100, _cellPaddingX:uint=20, _cellPaddingY:uint=20)
+		public function MasonryLayout(_colCount:uint=12, _rowCount:uint=8, _cellWidth:uint=128, _cellHeight:uint=128, _cellPaddingX:uint=0, _cellPaddingY:uint=0)
 		{
 			rowCount = _rowCount;
 			colCount = _colCount;
-			rowCountMin1 = rowCount - 1;
-			colCountMin1 = colCount - 1;
 			cellWidth = _cellWidth;
 			cellHeight = _cellHeight;
 			cellPaddingX = _cellPaddingX;
@@ -162,6 +158,9 @@ package com.app
 						break;
 				}
 			}
+			
+			//clearGrid();
+			
 			return(i);
 		}
 		
@@ -326,13 +325,7 @@ package com.app
 					break;
 			}
 			
-			/*
-			if (success){
-				return(true);
-			}
-			*/
-			
-			
+		
 			// step 1b. if no spot is found, move away one more cell and do the same scan, but with expanding the sweep +2 cells on either side
 			// repeat this until we run out of room.  
 			while (wif != -1) {
@@ -448,7 +441,8 @@ package com.app
 			for (var j:uint=x; j < x + cellsWide; j++){
 				for (var k:uint=y; k < y + cellsHigh; k++){
 					if (grid[j]){
-						if (grid[k]){
+						if (grid[j][k]){
+							
 							if (grid[j][k].full){
 								//trace("wif: 0");
 								return(0);
