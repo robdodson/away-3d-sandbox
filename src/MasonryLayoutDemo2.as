@@ -171,10 +171,13 @@ package
 				}
 				planes.push(plane);
 			}
-
+			
+			
 			// give the planes a layout
+			// Rob: you'll probably want to make the layout wider than it is tall since that sort of reflects Stella's design
 			var layout:MasonryLayout = new MasonryLayout(6, 6, 145, 145, 10, 10);
-			layout.placeItems(planes);
+			var indexOfWhereWeRanOutOfRoom:uint = layout.placeItems(planes, "justifiedtopleft");
+			
 			
 			// create a container for everything and give it a background so we
 			// can make sure we're properly centered
@@ -187,11 +190,13 @@ package
 			// create a canvas and add all the layed out content to it.
 			// then add the canvas to the container
 			var canvas:ObjectContainer3D = new ObjectContainer3D();
-			for (var j:int = 0; j < planes.length; j++) 
+			for (var j:int = 0; j < indexOfWhereWeRanOutOfRoom; j++) 
 			{
 				canvas.addChild(planes[j]);	
 			}
 			container.addChild(canvas);
+			
+			
 			
 			// figure out the size of the canvas
 			Bounds.getObjectContainerBounds(canvas);

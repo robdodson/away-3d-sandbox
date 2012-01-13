@@ -16,7 +16,11 @@ package
 	import com.app.MasonryLayout;
 	import com.app.Tile145x145;
 	import com.app.Tile300x145;
-	import com.app.Tile300x300;
+	import com.app.Tile300x300; 
+	import com.app.Tile128x128;
+	import com.app.Tile256x128;
+	import com.app.Tile256x256;
+
 	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -58,7 +62,7 @@ package
 		// Primitives etc
 		private var container:ObjectContainer3D;
 		
-		private var spritePlanes:Array;		// an array of value objects that contain an array of InteractiveSpritePlanes;
+		private var spritePlanes:Vector.<InteractiveSpritePlane>;		// an array of value objects that contain an array of InteractiveSpritePlanes;
 		private const numBigPlanes:uint = 5;
 		private const numMedPlanes:uint = 48;
 		private const numSmallPlanes:uint = 35;
@@ -158,14 +162,14 @@ package
 		{
 			container = new ObjectContainer3D();
 			
-			spritePlanes = new Array();
+			spritePlanes = new Vector.<InteractiveSpritePlane>();
 			cells = new Array();
 			cellIndex = 0;
 			lastX = 0;
 			
 			// Instantiate layout - can be reused if we're sticking with the same dimensions each time.
 			// args: numCols, numRows, cellWidth, cellHeight, paddingX, paddingY
-			layout = new MasonryLayout(12,6,145,145,10,10);
+			layout = new MasonryLayout(14,8,128,128,0,0);
 			
 			cells.push(new ObjectContainer3D());
 			container.addChild(cells[cellIndex]);
@@ -205,7 +209,7 @@ package
 			// make sure the first one is big
 			var plane:InteractiveSpritePlane = new InteractiveSpritePlane();
 			
-			plane.init(new Tile300x300(), false, true, false);
+			plane.init(new Tile256x256(), false, true, false);
 			plane.rotationX = -90;
 			
 			spritePlanes.push(plane);
@@ -217,11 +221,11 @@ package
 				var r:Number = Math.random();
 				
 				if (r < 0.2){
-					plane.init(new Tile300x300(), false, true, false);
+					plane.init(new Tile256x256(), false, true, false);
 				} else if (r >= 0.2 && r < 0.6){
-					plane.init(new Tile300x145(), false, true, false);
+					plane.init(new Tile256x128(), false, true, false);
 				} else {
-					plane.init(new Tile145x145(), false, true, false);
+					plane.init(new Tile128x128(), false, true, false);
 				}
 				plane.rotationX = -90;
 				
@@ -237,7 +241,7 @@ package
 				
 				// will return the index in your array where you ran out of room.
 				// feel free to change that to a vector if you like...
-				var amountSuccessfullyPlacedThisCell:uint = layout.placeItems(spritePlanes);
+				var amountSuccessfullyPlacedThisCell:uint = layout.placeItems(spritePlanes, true);
 				
 				
 				
@@ -261,6 +265,7 @@ package
 				trace("cells["+cellIndex+"] w/h/d: "+width+", "+height+", "+depth);
 				
 				cells[cellIndex].x = lastX;
+				cells[cellIndex].y = 0;
 				trace("lastX: "+lastX);
 				lastX = lastX + width + 300;
 				//cells[cellIndex].y = (height / 2);
@@ -280,8 +285,8 @@ package
 			width = Bounds.width;
 			depth = Bounds.depth;
 			height = Bounds.height;
-			container.x = -(lastX / 2);
-			container.y = -(height); //(height / 2);
+			//container.x = -(lastX / 2);
+			//container.y = -(height); //(height / 2);
 			
 			trace("container x/y: "+container.x+", "+container.y);
 			scene.addChild(container);

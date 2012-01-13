@@ -1,7 +1,9 @@
 package com.app
 {
 	import away3d.containers.ObjectContainer3D;
+	import away3d.loaders.parsers.Max3DSParser;
 	import away3d.primitives.InteractiveSpritePlane;
+	import away3d.tools.utils.Bounds;
 	
 	public class MasonryLayout
 	{
@@ -171,9 +173,14 @@ package com.app
 		// assumes each item in the array supports assignment of the x and y values and has width and height parameters
 		// also assumes items is pre-sorted by whatever you want to be placed first towards whatever you want to be placed last
 		// returns the index of the last placed item in the array before we ran out of room
-		// centered: centers grid of items around 0,0 as opposed to having 0,0 be it's top/left registration point
-		// snap: if centered == true, it snaps the centered grid to the nearest grid position to 0,0
-		public function placeItems(items:Vector.<InteractiveSpritePlane>, centered:Boolean=false, snap:Boolean=false):uint{
+		
+		// Possible values for positioning:
+		// "" - normal, don't do anything other than fit items in the grid, 0,0 is the top-left of the grid
+		// "centered" - centers grid of items around 0,0
+		// "centeredsnap" -  it snaps the centered grid to the nearest grid position to 0,0
+		// "topleftjustified" - justify the visible content so that it is flush with the top-left of the cartesian coordinate system
+		
+		public function placeItems(items:Vector.<InteractiveSpritePlane>, positioning:String=""):uint{
 			//items = _items; // *** do I not want to hold onto this?
 			for (i=0; i < items.length; i++){
 				cellsWide = Math.ceil(items[i].width / (cellWidth + cellPaddingX));
@@ -182,6 +189,10 @@ package com.app
 				centerX = Math.round(colCount/2 - cellsWide/2);
 				centerY = Math.round(rowCount/2 - cellsHigh/2);
 				
+				var cX:Number;
+				var cY:Number;
+				var mX:Number;
+				var mY:Number;
 				
 				// find the item a home
 				switch(whichApproach){
@@ -193,24 +204,49 @@ package com.app
 							placeItem(items[i], firstItem.x, firstItem.y);
 						} else {
 							if (!bias_findItemAPlace(items[i])){
-								if (centered){
-									var cX:Number;
-									var cY:Number;
-									if (snap){
-										cX = centerXInSnappedUnits;
-										cY = centerYInSnappedUnits;
-										for (j=0; j < i; j++){
-											items[j].x = items[j].x - centerXInSnappedUnits;
-											items[j].y = items[j].y + centerYInSnappedUnits;	// *** optimized for ObjectContainer3D, make it a - if using DisplayObjects here
-										}
-									} else {
-										cX = centerXInExactUnits;
-										cY = centerYInExactUnits;
-										for (j=0; j < i; j++){
-											items[j].x = items[j].x - centerXInExactUnits;
-											items[j].y = items[j].y + centerYInExactUnits;
-										}
+								
+								if (positioning=="centeredsnap"){
+									cX = centerXInSnappedUnits;
+									cY = centerYInSnappedUnits;
+									for (j=0; j < i; j++){
+										items[j].x = items[j].x - cX;
+										items[j].y = items[j].y + cY;	// *** optimized for ObjectContainer3D, make it a - if using DisplayObjects here
 									}
+								} else if (positioning=="centered"){
+									cX = centerXInExactUnits;
+									cY = centerYInExactUnits;
+									for (j=0; j < i; j++){
+										items[j].x = items[j].x - cX;
+										items[j].y = items[j].y + cY;
+									}
+								} else if (positioning=="justifiedbottomleft"){
+									
+									cX = Number.MAX_VALUE;
+									cY = Number.MAX_VALUE;
+									for (j=0; j < i; j++){
+										cX = Math.min(cX, items[j].x - items[j].width/2);
+										cY = Math.min(cY, items[j].y - items[j].height/2);
+									}
+									for (j=0; j < i; j++){
+										items[j].x -= cX;
+										items[j].y -= cY;
+									}
+									
+								} else if (positioning=="justifiedtopleft"){
+									trace("a");
+									mY = Number.MIN_VALUE;
+									cX = Number.MAX_VALUE;
+									cY = Number.MAX_VALUE;
+									for (j=0; j < i; j++){
+										cX = Math.min(cX, items[j].x - items[j].width/2);
+										cY = Math.min(cY, items[j].y - items[j].height/2);
+										mY = Math.max(mY, items[j].y - items[j].height/2);
+									}
+									for (j=0; j < i; j++){
+										items[j].x -= cX;
+										items[j].y -= (cY + Math.abs(mY - cY));
+									}
+									
 								}
 								
 								return(i);
@@ -225,17 +261,44 @@ package com.app
 				}
 			}
 			
-			if (centered){
-				if (snap){
-					for (j=0; j < i; j++){
-						items[j].x = items[j].x - centerXInSnappedUnits;
-						items[j].y = items[j].y + centerYInSnappedUnits;	// *** optimized for ObjectContainer3D, make it a - if using DisplayObjects here
-					}
-				} else {
-					for (j=0; j < i; j++){
-						items[j].x = items[j].x - centerXInExactUnits;
-						items[j].y = items[j].y + centerYInExactUnits;
-					}
+			if (positioning=="centeredsnap"){
+				cX = centerXInSnappedUnits;
+				cY = centerYInSnappedUnits;
+				for (j=0; j < i; j++){
+					items[j].x = items[j].x - cX;
+					items[j].y = items[j].y + cY;	// *** optimized for ObjectContainer3D, make it a - if using DisplayObjects here
+				}
+			} else if (positioning=="centered"){
+				cX = centerXInExactUnits;
+				cY = centerYInExactUnits;
+				for (j=0; j < i; j++){
+					items[j].x = items[j].x - cX;
+					items[j].y = items[j].y + cY;
+				}
+			} else if (positioning=="justifiedbottomleft"){
+				cX = Number.MAX_VALUE;
+				cY = Number.MAX_VALUE;
+				for (j=0; j < i; j++){
+					cX = Math.min(cX, items[j].x - items[j].width/2);
+					cY = Math.min(cY, items[j].y - items[j].height/2);
+				}
+				for (j=0; j < i; j++){
+					items[j].x -= cX;
+					items[j].y -= cY;
+				}
+			} else if (positioning=="justifiedtopleft"){
+				trace("b");
+				mY = Number.MIN_VALUE;
+				cX = Number.MAX_VALUE;
+				cY = Number.MAX_VALUE;
+				for (j=0; j < i; j++){
+					cX = Math.min(cX, items[j].x - items[j].width/2);
+					cY = Math.min(cY, items[j].y - items[j].height/2);
+					mY = Math.max(mY, items[j].y - items[j].height/2);
+				}
+				for (j=0; j < i; j++){
+					items[j].x -= cX;
+					items[j].y -= (cY + Math.abs(mY - cY));
 				}
 			}
 			

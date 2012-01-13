@@ -104,10 +104,10 @@ package
 			//addChild(new ObjectDestruction());
 			
 			// Pooling demos
-			addChild(new Pooling1());
+			//addChild(new Pooling1());
 			
 			// Simplified MasonryLayout example
-			//addChild(new MasonryLayoutDemo2());
+			addChild(new MasonryLayoutDemo2());
 		}
 	}
 }
