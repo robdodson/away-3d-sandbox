@@ -9,11 +9,15 @@ package
 	import away3d.materials.ColorMaterial;
 	import away3d.primitives.Plane;
 	
+	import com.inchworm.pools.PlanePool;
+	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
-	import flash.events.MouseEvent;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	
 	public class Pooling1 extends Sprite
 	{
@@ -31,14 +35,16 @@ package
 		// Away3D Config
 		private var cameraViewDistance:Number = 100000;
 		private var antiAlias:Number = 2;
+
+		// Collections
+		private var planes						:Array = [];
+		private var length						:int = 0;
 		
-		// Materials
-		private var colorMaterial:ColorMaterial;
+		// Pools
+		private var planePool					:PlanePool;
 		
-		// Fountain properties
-		private var count:int = 1000;
-		private var gravity:Number = -0.5;
-		private var planes:Array = [];
+		// Logging
+		private var log							:TextField;
 		
 		// --------------------------------------------------------------------------------------------------------------
 		
@@ -65,7 +71,6 @@ package
 		{
 			// Lets get busy
 			setupAway3D4();
-			setupMaterials();
 			setupPrimitivesAndModels();
 			setupEventListeners();
 		}
@@ -88,31 +93,20 @@ package
 			
 			// Setup a HoverController (aka HoverCamera3D in older versions of Away3D)
 			cameraController = new HoverController(camera, null, 180.1, 0.1, 2000);
-			
-			// Show Away3D stats
-			stats = new AwayStats(view,true);
-			stats.x = 5;
-			stats.y = 5;
-			addChild(stats);
-		}
-		
-		private function setupMaterials():void
-		{
-			// Setup any materials
-			colorMaterial = new ColorMaterial(0x0000FF);
 		}
 		
 		private function setupPrimitivesAndModels():void
 		{
-			for (var i:int = 0; i < count; i++) 
-			{
-				var plane:Plane = new Plane(colorMaterial, 100, 100, 1, 1, false);
-				plane.extra = {};
-				plane.extra.vx = Math.random() * 50 - 25;
-				plane.extra.vy = Math.random() * -10 - 10; // random value between -10 and -20
-				scene.addChild(plane);
-				planes.push(plane);
-			}
+			var format:TextFormat = new TextFormat();
+			format.color = 0xFFFFFF;
+			format.size = 20;
+			log = new TextField();
+			log.defaultTextFormat = format;
+			log.autoSize = TextFieldAutoSize.LEFT;
+			log.x = 20;
+			addChild(log);
+			
+			planePool = new PlanePool(10);
 			
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
@@ -125,24 +119,32 @@ package
 		
 		private function onEnterFrame(e:Event):void
 		{
-			// If the plane has flown off the screen then
-			// set it back to the base of the fountain
-			// and reinitialize it's velocity
-			var len:int = planes.length;
-			for (var i:int = 0; i < len; i++) 
+			var plane:Plane;
+			
+			for (var i:int = 0; i < 1; i++)
 			{
-				var plane:Plane = Plane(planes[i]);
-				plane.extra.vy += gravity;
-				plane.x += plane.extra.vx;
-				plane.y += plane.extra.vy;
-				if (plane.y < -3000)
+				plane = planePool.checkOut();
+				plane.x = Math.random() * stage.stageWidth;
+				plane.y = Math.random() * stage.stageHeight;
+				scene.addChild(plane);
+				planes.push(plane);
+				length++;
+			}
+			
+			for (i = length - 1; i > -1; i--) 
+			{
+				plane = planes[i];
+				ColorMaterial(plane.material).alpha -= 0.01;
+				if (ColorMaterial(plane.material).alpha <= 0)
 				{
-					plane.x = 0;
-					plane.y = 0;
-					plane.extra.vx = Math.random() * 50 - 25;
-					plane.extra.vy = Math.random() * -10 - 10;
+					scene.removeChild(plane);
+					planes.splice(i, 1);
+					length--;
+					planePool.checkIn(plane);
 				}
 			}
+			
+			log.text = "Planes on screen: " + length + "\nPool size: " + planePool.poolSize;
 			
 			view.render();
 		}

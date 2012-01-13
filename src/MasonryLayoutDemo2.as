@@ -173,13 +173,13 @@ package
 			}
 
 			// give the planes a layout
-			var layout:MasonryLayout = new MasonryLayout(6, 4, 145, 145, 10, 10);
-			layout.placeItems(planes, true, true);
+			var layout:MasonryLayout = new MasonryLayout(6, 6, 145, 145, 10, 10);
+			layout.placeItems(planes);
 			
 			// create a container for everything and give it a background so we
 			// can make sure we're properly centered
 			var container:ObjectContainer3D = new ObjectContainer3D();
-			var background:Plane = new Plane(new ColorMaterial(0xFF0000, .3), 1000, 745, 1, 1, false);
+			var background:Plane = new Plane(new ColorMaterial(0xFF0000, .3), 1000, 1000, 1, 1, false);
 			background.z = 10;
 			container.addChild(background);
 			scene.addChild(container);
