@@ -173,7 +173,7 @@ package
 			}
 
 			// give the planes a layout
-			var layout:MasonryLayout = new MasonryLayout(6, 6, 145, 145, 10, 10);
+			var layout:MasonryLayout = new MasonryLayout(6, 4, 145, 145, 10, 10);
 			layout.placeItems(planes, true, true);
 			
 			// create a container for everything and give it a background so we
