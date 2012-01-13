@@ -1,9 +1,7 @@
 package com.app
 {
 	import away3d.containers.ObjectContainer3D;
-	
-	import de.polygonal.ds.*;
-	import de.polygonal.ds.Array2;
+	import away3d.primitives.InteractiveSpritePlane;
 	
 	public class MasonryLayout
 	{
@@ -67,20 +65,20 @@ package com.app
 			// nice touch but we don't need it yet
 			// define up/down/left/right pointers for each cell
 			for (i=0; i < colCount; i++){
-				for (j=0; j < rowCount; j++){
-					if (i > 0){
-						grid[i][j][LEFT] = grid[i-1][j];
-					}
-					if (j > 0){
-						grid[i][j][UP] = grid[i][j-1];	
-					}
-					if (i < (colCount - 1)){
-						grid[i][j][RIGHT] = grid[i+1][j];
-					}
-					if (j < (rowCount - 1)){
-						grid[i][j][DOWN] = grid[i][j+1];
-					}
-				}
+			for (j=0; j < rowCount; j++){
+			if (i > 0){
+			grid[i][j][LEFT] = grid[i-1][j];
+			}
+			if (j > 0){
+			grid[i][j][UP] = grid[i][j-1];	
+			}
+			if (i < (colCount - 1)){
+			grid[i][j][RIGHT] = grid[i+1][j];
+			}
+			if (j < (rowCount - 1)){
+			grid[i][j][DOWN] = grid[i][j+1];
+			}
+			}
 			}
 			*/
 			
@@ -133,25 +131,25 @@ package com.app
 			
 		}
 		public function get centerXInSnappedUnits():Number{
-			return(Math.round(colCount/2) * (cellWidth * cellPaddingX));
+			return(Math.round(colCount/2) * (cellWidth + cellPaddingX));
 		}
 		public function set centerXInSnappedUnits(n:Number):void{
 			
 		}
 		public function get centerYInSnappedUnits():Number{
-			return(Math.round(colCount/2) * (cellWidth * cellPaddingX));
+			return(Math.round(rowCount/2) * (cellHeight + cellPaddingY));
 		}
 		public function set centerYInSnappedUnits(n:Number):void{
 			
 		}
 		public function get centerXInExactUnits():Number{
-			return((colCount/2) * (cellWidth * cellPaddingX));
+			return((colCount/2) * (cellWidth + cellPaddingX));
 		}
 		public function set centerXInExactUnits(n:Number):void{
 			
 		}
 		public function get centerYInExactUnits():Number{
-			return((rowCount/2) * (cellHeight * cellPaddingY));
+			return((rowCount/2) * (cellHeight + cellPaddingY));
 		}
 		public function set centerYInExactUnits(n:Number):void{
 			
@@ -173,7 +171,9 @@ package com.app
 		// assumes each item in the array supports assignment of the x and y values and has width and height parameters
 		// also assumes items is pre-sorted by whatever you want to be placed first towards whatever you want to be placed last
 		// returns the index of the last placed item in the array before we ran out of room
-		public function placeItems(items:Array):uint{
+		// centered: centers grid of items around 0,0 as opposed to having 0,0 be it's top/left registration point
+		// snap: if centered == true, it snaps the centered grid to the nearest grid position to 0,0
+		public function placeItems(items:Vector.<InteractiveSpritePlane>, centered:Boolean=false, snap:Boolean=false):uint{
 			//items = _items; // *** do I not want to hold onto this?
 			for (i=0; i < items.length; i++){
 				cellsWide = Math.ceil(items[i].width / (cellWidth + cellPaddingX));
@@ -186,13 +186,33 @@ package com.app
 				// find the item a home
 				switch(whichApproach){
 					case "BIAS":
-						
+						var j:uint;
 						if (i == 0){
 							// first item, position near the center, somewhat randomly
 							firstItem = { item: items[0], x: centerX + (Math.round((Math.random() * 3) - 1.5)), y: centerY + (Math.round((Math.random() * 3) - 1.5)), cellsWide: cellsWide, cellsHigh: cellsHigh  }
 							placeItem(items[i], firstItem.x, firstItem.y);
 						} else {
 							if (!bias_findItemAPlace(items[i])){
+								if (centered){
+									var cX:Number;
+									var cY:Number;
+									if (snap){
+										cX = centerXInSnappedUnits;
+										cY = centerYInSnappedUnits;
+										for (j=0; j < i; j++){
+											items[j].x = items[j].x - centerXInSnappedUnits;
+											items[j].y = items[j].y + centerYInSnappedUnits;	// *** optimized for ObjectContainer3D, make it a - if using DisplayObjects here
+										}
+									} else {
+										cX = centerXInExactUnits;
+										cY = centerYInExactUnits;
+										for (j=0; j < i; j++){
+											items[j].x = items[j].x - centerXInExactUnits;
+											items[j].y = items[j].y + centerYInExactUnits;
+										}
+									}
+								}
+								
 								return(i);
 							}
 						}
@@ -202,6 +222,20 @@ package com.app
 					case "WEIGHT":
 						
 						break;
+				}
+			}
+			
+			if (centered){
+				if (snap){
+					for (j=0; j < i; j++){
+						items[j].x = items[j].x - centerXInSnappedUnits;
+						items[j].y = items[j].y + centerYInSnappedUnits;	// *** optimized for ObjectContainer3D, make it a - if using DisplayObjects here
+					}
+				} else {
+					for (j=0; j < i; j++){
+						items[j].x = items[j].x - centerXInExactUnits;
+						items[j].y = items[j].y + centerYInExactUnits;
+					}
 				}
 			}
 			
@@ -246,7 +280,7 @@ package com.app
 			return(false);
 		}
 		
-											 
+		
 		private function bias_crawl(item:Object, direction:String, startX:uint, startY:uint):Boolean{
 			var vX:int = startX;  // vX and vY reflect the current positions in the crawl
 			var vY:int = startY;
@@ -371,7 +405,7 @@ package com.app
 					break;
 			}
 			
-		
+			
 			// step 1b. if no spot is found, move away one more cell and do the same scan, but with expanding the sweep +2 cells on either side
 			// repeat this until we run out of room.  
 			while (wif != -1) {
@@ -404,8 +438,8 @@ package com.app
 						
 						break;
 				}
-			
-			
+				
+				
 				switch(direction){
 					case LEFT:
 					case RIGHT:
@@ -467,7 +501,7 @@ package com.app
 			//trace("MasonryLayout.placeItem("+item+", "+x+", "+y+") cellsWide="+cellsWide+", cellsHigh="+cellsHigh);
 			if (item is ObjectContainer3D){
 				item.x = (x * (cellWidth + cellPaddingX)) + (item.width/2);
-				item.y = (y * (cellHeight + cellPaddingY)) + (item.height/2);
+				item.y = -((y * (cellHeight + cellPaddingY)) + (item.height/2));
 			} else {
 				item.x = x * (cellWidth + cellPaddingX);
 				item.y = y * (cellHeight + cellPaddingY);

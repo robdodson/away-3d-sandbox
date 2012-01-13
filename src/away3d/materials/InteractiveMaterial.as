@@ -39,6 +39,12 @@ package away3d.materials
 			sourceMesh.addEventListener(MouseEvent3D.MOUSE_OVER, onMouseOver);
 		}
 		
+		override public function dispose(deep:Boolean):void
+		{
+			trace(this, "disposed!");
+			super.dispose(deep);
+		}
+		
 		protected function onMouseOver(e:MouseEvent3D):void
 		{
 			sourceMesh.addEventListener(MouseEvent3D.MOUSE_MOVE, onMouseMove);

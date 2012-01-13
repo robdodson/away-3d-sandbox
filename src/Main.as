@@ -98,7 +98,16 @@ package
 			//addChild(new CameraMovements());
 			
 			// Masonry InteractiveSpritePlanes
-			addChild(new MasonryInteractiveSpritePlanes());
+			//addChild(new MasonryInteractiveSpritePlanes());
+			
+			// Object destruction
+			//addChild(new ObjectDestruction());
+			
+			// Pooling demos
+			//addChild(new Pooling1());
+			
+			// Simplified MasonryLayout example
+			addChild(new MasonryLayoutDemo2());
 		}
 	}
 }

@@ -41,7 +41,7 @@ package away3d.primitives
 		
 		public function InteractiveSpritePlane(material:MaterialBase=null, width:Number=100, height:Number=100, segmentsW:Number=1, segmentsH:Number=1, yUp:Boolean=true)
 		{
-			super(material,width,height,segmentsW,segmentsH,yUp);
+			super(material,width,height,segmentsW,segmentsH,false);
 			interactive = false;
 			transparent = false;
 			animated = false;

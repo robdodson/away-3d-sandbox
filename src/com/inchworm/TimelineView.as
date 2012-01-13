@@ -2,8 +2,6 @@ package com.inchworm
 {
 	import away3d.containers.ObjectContainer3D;
 	
-	import com.inchworm.pools.SimpleObjectPool;
-	
 	import de.polygonal.ds.DLinkedList;
 	import de.polygonal.ds.DListIterator;
 	
