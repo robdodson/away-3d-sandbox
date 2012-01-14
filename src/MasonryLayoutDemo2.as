@@ -204,6 +204,9 @@ package
 			canvasBackground.x = Bounds.width / 2;
 			canvasBackground.y = -(Bounds.height / 2);
 			canvas.addChild(canvasBackground);
+			isCentered = true;
+			canvas.x -= Bounds.width / 2;
+			canvas.y += Bounds.height / 2;
 		}
 		
 		private function setupEventListeners():void
