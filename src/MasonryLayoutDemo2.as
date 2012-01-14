@@ -55,10 +55,9 @@ package
 		private const lensFieldOfView:Number = 60; // 60 is default
 		private const cameraDistance:Number = 2100;
 		
-		
 		// Primitives etc
 		private var container:ObjectContainer3D;
-		
+		private var canvas:ObjectContainer3D;
 		private var spritePlanes:Array;		// an array of value objects that contain an array of InteractiveSpritePlanes;
 		private const numBigPlanes:uint = 5;
 		private const numMedPlanes:uint = 48;
@@ -70,6 +69,7 @@ package
 		private var lastX:Number = 0;
 		
 		// Layout
+		private var isCentered:Boolean;
 		private var cols:int = 30;
 		private var colPad:int = 50;
 		private var rowPad:int = 50;
@@ -175,21 +175,21 @@ package
 			
 			// give the planes a layout
 			// Rob: you'll probably want to make the layout wider than it is tall since that sort of reflects Stella's design
-			var layout:MasonryLayout = new MasonryLayout(6, 6, 145, 145, 10, 10);
+			var layout:MasonryLayout = new MasonryLayout(6, 4, 145, 145, 10, 10);
 			var indexOfWhereWeRanOutOfRoom:uint = layout.placeItems(planes, "justifiedtopleft");
 			
 			
 			// create a container for everything and give it a background so we
 			// can make sure we're properly centered
-			var container:ObjectContainer3D = new ObjectContainer3D();
-			var background:Plane = new Plane(new ColorMaterial(0xFF0000, .3), 1000, 1000, 1, 1, false);
+			container = new ObjectContainer3D();
+			var background:Plane = new Plane(new ColorMaterial(0xFF0000, .3), 1000, 745, 1, 1, false);
 			background.z = 10;
 			container.addChild(background);
 			scene.addChild(container);
 			
 			// create a canvas and add all the layed out content to it.
 			// then add the canvas to the container
-			var canvas:ObjectContainer3D = new ObjectContainer3D();
+			canvas = new ObjectContainer3D();
 			for (var j:int = 0; j < indexOfWhereWeRanOutOfRoom; j++) 
 			{
 				canvas.addChild(planes[j]);	
@@ -204,22 +204,31 @@ package
 			canvasBackground.x = Bounds.width / 2;
 			canvasBackground.y = -(Bounds.height / 2);
 			canvas.addChild(canvasBackground);
-			canvas.x -= Bounds.width / 2;
-			canvas.y += Bounds.height / 2;
 		}
 		
 		private function setupEventListeners():void
 		{
 			// Setup event listeners
-			stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 			stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
-			
-			// Setup resize handler
-			stage.addEventListener(Event.RESIZE, resizeHandler);
-			resizeHandler(); // Good to run the resizeHandler to ensure everything is in its place
 			
 			// Setup render enter frame event listener
 			stage.addEventListener(Event.ENTER_FRAME,renderHandler);
+		}
+		
+		private function mouseUpHandler(e:MouseEvent):void
+		{
+			if (!isCentered)
+			{
+				isCentered = true;
+				canvas.x -= Bounds.width / 2;
+				canvas.y += Bounds.height / 2;
+			}
+			else
+			{
+				isCentered = false;
+				canvas.x += Bounds.width / 2;
+				canvas.y -= Bounds.height / 2;
+			}
 		}
 		
 		private function renderHandler(e:Event):void
@@ -232,34 +241,6 @@ package
 			
 			
 			view.render();
-		}
-		
-		private function mouseDownHandler(e:MouseEvent):void
-		{
-			lastPanAngle = cameraController.panAngle;
-			lastTiltAngle = cameraController.tiltAngle;
-			lastMouseX = stage.mouseX;
-			lastMouseY = stage.mouseY;
-			move = true;
-			stage.addEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
-		}
-		
-		private function mouseUpHandler(e:MouseEvent):void
-		{
-			move = false;
-			stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
-		}
-		
-		private function onStageMouseLeave(e:Event):void
-		{
-			move = false;
-			stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
-		}
-		
-		private function resizeHandler(e:Event=null):void
-		{
-			view.width = stage.stageWidth;
-			view.height = stage.stageHeight;
 		}
 	}
 }
