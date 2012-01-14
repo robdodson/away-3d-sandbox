@@ -197,12 +197,15 @@ package
 			container.addChild(canvas);
 			
 			
-			
 			// figure out the size of the canvas
 			Bounds.getObjectContainerBounds(canvas);
 			var canvasBackground:Plane = new Plane(new ColorMaterial(0x0000FF, .5), Bounds.width, Bounds.height, 1, 1, false);
 			canvasBackground.z = 10;
+			canvasBackground.x = Bounds.width / 2;
+			canvasBackground.y = -(Bounds.height / 2);
 			canvas.addChild(canvasBackground);
+			canvas.x -= Bounds.width / 2;
+			canvas.y += Bounds.height / 2;
 		}
 		
 		private function setupEventListeners():void
