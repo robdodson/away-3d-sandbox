@@ -63,6 +63,7 @@ package
 		private const numMedPlanes:uint = 48;
 		private const numSmallPlanes:uint = 35;
 		private const spritePlaneCount:uint = numBigPlanes + numMedPlanes + numSmallPlanes;
+		private var planes:Vector.<InteractiveSpritePlane>;
 		
 		private var cells:Array;			// an array of laid-out cells in an ObjectContainer3D
 		private var cellIndex:uint = 0;
@@ -73,6 +74,7 @@ package
 		private var cols:int = 30;
 		private var colPad:int = 50;
 		private var rowPad:int = 50;
+		private var indexOfWhereWeRanOutOfRoom:uint;
 		
 		private var layout:MasonryLayout;
 		
@@ -147,13 +149,13 @@ package
 		private function setupPrimitivesAndModels():void
 		{
 			// create your first plane, ensuring that it's big
-			var planes:Vector.<InteractiveSpritePlane> = new Vector.<InteractiveSpritePlane>();
+			planes = new Vector.<InteractiveSpritePlane>();
 			var plane:InteractiveSpritePlane = new InteractiveSpritePlane();
 			plane.init(new Tile300x300(), false, true, false);
 			planes.push(plane);
 			
 			// the others are random
-			for (var i:int = 0; i < 10; i++)
+			for (var i:int = 0; i < 40; i++)
 			{
 				plane = new InteractiveSpritePlane();
 				var r:Number = Math.random();
@@ -175,8 +177,8 @@ package
 			
 			// give the planes a layout
 			// Rob: you'll probably want to make the layout wider than it is tall since that sort of reflects Stella's design
-			var layout:MasonryLayout = new MasonryLayout(6, 4, 145, 145, 10, 10);
-			var indexOfWhereWeRanOutOfRoom:uint = layout.placeItems(planes, "justifiedtopleft");
+			layout = new MasonryLayout(6, 4, 145, 145, 10, 10);
+			indexOfWhereWeRanOutOfRoom = layout.placeItems(planes, "justifiedtopleft");
 			
 			
 			// create a container for everything and give it a background so we
@@ -190,11 +192,13 @@ package
 			// create a canvas and add all the layed out content to it.
 			// then add the canvas to the container
 			canvas = new ObjectContainer3D();
+			//planes.splice(indexOfWhereWeRanOutOfRoom, (planes.length - indexOfWhereWeRanOutOfRoom));
 			for (var j:int = 0; j < indexOfWhereWeRanOutOfRoom; j++) 
 			{
 				canvas.addChild(planes[j]);	
 			}
 			container.addChild(canvas);
+			
 			
 			
 			// figure out the size of the canvas
@@ -220,6 +224,7 @@ package
 		
 		private function mouseUpHandler(e:MouseEvent):void
 		{
+			/*
 			if (!isCentered)
 			{
 				isCentered = true;
@@ -231,6 +236,18 @@ package
 				isCentered = false;
 				canvas.x += Bounds.width / 2;
 				canvas.y -= Bounds.height / 2;
+			}
+			*/
+			for(var j:int=0; j < indexOfWhereWeRanOutOfRoom; j++){
+				canvas.removeChild(planes[j]);
+			}
+			
+			layout.clearGrid();
+			indexOfWhereWeRanOutOfRoom = layout.placeItems(planes, "justifiedtopleft");
+			
+			for (var j:int = 0; j < indexOfWhereWeRanOutOfRoom; j++) 
+			{
+				canvas.addChild(planes[j]);	
 			}
 		}
 		

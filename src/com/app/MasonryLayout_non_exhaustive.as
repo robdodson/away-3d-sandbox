@@ -430,15 +430,10 @@ package com.app
 			// creep
 			//var success:Boolean = false;
 			var wif:int;
-			var wifOOBCount:uint;
-			var searchScope:uint;
 			
 			switch(direction){
 				case LEFT:
 				case RIGHT:
-					wifOOBCount = 0;
-					searchScope = (destY > initY) ? (destY - initY) : (initY - destY);
-					
 					if (creepDirection == 1){
 						for (vY = initY; vY <= destY; vY++){
 							wif = willItemFit(item,vX,vY);
@@ -446,9 +441,7 @@ package com.app
 								placeItem(item,vX,vY);
 								return(true);
 							} else if (wif == -1) {
-								if (++wifOOBCount >= searchScope){
-									break;
-								}
+								break;
 							}
 						}
 					} else {
@@ -458,18 +451,13 @@ package com.app
 								placeItem(item,vX,vY);
 								return(true);
 							} else if (wif == -1) {
-								if (++wifOOBCount >= searchScope){
-									break;
-								}
+								break;
 							}
 						}
 					}
 					break;
 				case UP:
 				case DOWN:
-					wifOOBCount = 0;
-					searchScope = (destY > initY) ? (destY - initY) : (initY - destY);
-					
 					if (creepDirection == 1){
 						for (vX = initX; vX <= destX; vX++){
 							wif = willItemFit(item,vX,vY);
@@ -477,9 +465,7 @@ package com.app
 								placeItem(item,vX,vY);
 								return(true);
 							} else if (wif == -1) {
-								if (++wifOOBCount >= searchScope){
-									break;
-								}
+								break;
 							}
 						}
 					} else {
@@ -489,9 +475,7 @@ package com.app
 								placeItem(item,vX,vY);
 								return(true);
 							} else if (wif == -1) {
-								if (++wifOOBCount >= searchScope){
-									break;
-								}
+								break;
 							}
 						}
 					}
@@ -536,11 +520,13 @@ package com.app
 						break;
 				}
 				
+				//var wifOOBCount:uint;
+				//var searchScope:uint;
 				switch(direction){
 					case LEFT:
 					case RIGHT:
-						wifOOBCount = 0;
-						searchScope = (destY > initY) ? (destY - initY) : (initY - destY);
+						//wifOOBCount = 0;
+						//searchScope = (destY > initY) ? (destY - initY) : (initY - destY);
 						if (creepDirection == 1){
 							for (vY = initY; vY <= destY; vY++){
 								wif = willItemFit(item,vX,vY);
@@ -548,9 +534,8 @@ package com.app
 									placeItem(item,vX,vY);
 									return(true);
 								} else if (wif == -1) {
-									if (++wifOOBCount >= searchScope){
-										break;
-									}
+									//if (++wifOOBCount >= searchScope){
+									break;
 								}
 							}
 						} else {
@@ -560,18 +545,13 @@ package com.app
 									placeItem(item,vX,vY);
 									return(true);
 								} else if (wif == -1) {
-									if (++wifOOBCount >= searchScope){
-										break;
-									}
+									break;
 								}
 							}
 						}
 						break;
 					case UP:
 					case DOWN:
-						wifOOBCount = 0;
-						searchScope = (destX > initX) ? (destX - initX) : (initX - destX);
-						
 						if (creepDirection == 1){
 							for (vX = initX; vX <= destX; vX++){
 								wif = willItemFit(item,vX,vY);
@@ -579,9 +559,7 @@ package com.app
 									placeItem(item,vX,vY);
 									return(true);
 								} else if (wif == -1) {
-									if (++wifOOBCount >= searchScope){
-										break;
-									}
+									break;
 								}
 							}
 						} else {
@@ -591,9 +569,7 @@ package com.app
 									placeItem(item,vX,vY);
 									return(true);
 								} else if (wif == -1) {
-									if (++wifOOBCount >= searchScope){
-										break;
-									}
+									break;
 								}
 							}
 						}
