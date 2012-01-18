@@ -95,7 +95,7 @@ package com.app
 				possibleBiasArrays[2] = new Array(RIGHT,LEFT,UP,DOWN);
 				possibleBiasArrays[3] = new Array(LEFT,RIGHT,DOWN,UP);
 				var r:Number = Math.floor(Math.min(Math.random() * possibleBiasArrays.length, possibleBiasArrays.length));
-				trace("bias "+r);
+				//trace("bias "+r);
 				bias = possibleBiasArrays[r];
 				
 				biasIndex = 0;
@@ -184,7 +184,7 @@ package com.app
 		public function placeItems(items:Vector.<InteractiveSpritePlane>, positioning:String=""):uint{
 			//items = _items; // *** do I not want to hold onto this?
 			var r:Number = Math.floor(Math.min(Math.random() * possibleBiasArrays.length, possibleBiasArrays.length));
-			trace("bias "+r);
+			//trace("bias "+r);
 			bias = possibleBiasArrays[r];
 			
 			
@@ -238,7 +238,7 @@ package com.app
 									}
 									
 								} else if (positioning=="justifiedtopleft"){
-									trace("a");
+									//trace("a");
 									mY = -99999;
 									cX = Number.MAX_VALUE;
 									cY = Number.MAX_VALUE;
@@ -293,7 +293,7 @@ package com.app
 					items[j].y -= cY;
 				}
 			} else if (positioning=="justifiedtopleft"){
-				trace("b");
+				//trace("b");
 				mY = -99999;
 				cX = Number.MAX_VALUE;
 				cY = Number.MAX_VALUE;
@@ -332,7 +332,7 @@ package com.app
 			while (!placed){
 				
 				placed = bias_crawl(item, bias[biasIndex], firstItem.x, firstItem.y);
-				trace("returned "+placed+" for biasIndex "+biasIndex);
+				//trace("returned "+placed+" for biasIndex "+biasIndex);
 				
 				// step 2. if we've failed in that direction, move onto the next bias direction and repeat step 1 until we've run out of directions
 				// otherwise, break out and return true.
@@ -355,7 +355,7 @@ package com.app
 		
 		
 		private function bias_crawl(item:Object, direction:String, startX:uint, startY:uint):Boolean{
-			trace("bias_crawl("+item.width+"x"+item.height+", direction=="+direction+", startX=="+startX+", startY=="+startY+")");
+			//trace("bias_crawl("+item.width+"x"+item.height+", direction=="+direction+", startX=="+startX+", startY=="+startY+")");
 			
 			var vX:int = startX;  // vX and vY reflect the current positions in the crawl
 			var vY:int = startY;
@@ -500,7 +500,7 @@ package com.app
 					break;
 			}
 			
-			trace("initial pass failed, moving outwards");
+			//trace("initial pass failed, moving outwards");
 			
 			// step 1b. if no spot is found, move away one more cell and do the same scan, but with expanding the sweep +2 cells on either side
 			// repeat this until we run out of room.  
@@ -516,7 +516,7 @@ package com.app
 							initY = initY + 1;
 							destY = destY - 1;
 						}
-						trace("next (lr) vX: "+vX+"  initY: "+initY+ " destY: "+destY);
+						//trace("next (lr) vX: "+vX+"  initY: "+initY+ " destY: "+destY);
 						
 						break;
 					case UP:
@@ -533,7 +533,7 @@ package com.app
 							//vX = startX + firstItem.cellsWide + 1 - cellsWide;
 							//destX = startX - 1;
 						}
-						trace("next (ud) vY: "+vY+"  initX: "+initX+ " destX: "+destX);
+						//trace("next (ud) vY: "+vY+"  initX: "+initX+ " destX: "+destX);
 						
 						break;
 				}
@@ -628,7 +628,7 @@ package com.app
 		
 		// assumes cellsWide and cellsHigh is still good -- 0: won't fit, 1: will fit, -1: out of room on edge of grid
 		private function willItemFit(item:Object, x:uint, y:uint):int{
-			trace("MasonryLayout.willItemFit("+item+", "+x+", "+y+")");
+			//trace("MasonryLayout.willItemFit("+item+", "+x+", "+y+")");
 			for (var j:uint=x; j < x + cellsWide; j++){
 				for (var k:uint=y; k < y + cellsHigh; k++){
 					if (grid[j]){
