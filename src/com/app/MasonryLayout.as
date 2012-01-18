@@ -364,6 +364,8 @@ package com.app
 			var initY:int;
 			var destX:int; // destX and Y are used to define the terminus of a perpendicular crawl
 			var destY:int;
+			var destX2:int;
+			var destY2:int;
 			
 			//trace("direction: "+direction);
 			
@@ -398,13 +400,19 @@ package com.app
 					} else if (direction == RIGHT){
 						vX = initX = startX + (firstItem.cellsWide);
 					}
+					vY = initY = Math.round(startY + (firstItem.cellsHigh/2));
+					
 					if (creepDirection == 1){
-						vY = initY = startY - 1;
+						//vY = initY = startY - 1;
 						destY = startY + firstItem.cellsHigh; // - cellsHigh;  // that last bit fails if center item is smaller than the next in the Y direction
+						destY2 = startY - 1;
 					} else {
-						vY = initY = startY + firstItem.cellsHigh; // - cellsHigh;  // that last bit fails if center item is smaller than the next in the Y direction
+					
+						//vY = initY = startY + firstItem.cellsHigh; // - cellsHigh;  // that last bit fails if center item is smaller than the next in the Y direction
 						destY = startY - 1;
+						destY2 = startY + firstItem.cellsHigh;
 					}
+					
 					//trace("init (lr) vX: "+vX+"  initY: "+initY+ " destY: "+destY);
 					
 					break;
@@ -417,13 +425,20 @@ package com.app
 						vY = initY = startY + (firstItem.cellsHigh);
 					}
 					
+					vX = initX = Math.round(startX + (firstItem.cellsWide/2));
+					
 					if (creepDirection == 1){
-						vX = initX = startX - 1;
+						
+						//vX = initX = startX - 1;
 						destX = startX + firstItem.cellsWide; //  - cellsWide;  // that last bit fails if center item is smaller than the next in the X direction
+						destX2 = startX - 1;
 					} else {
-						vX = initX = startX + firstItem.cellsWide; // - cellsWide;  // that last bit fails if center item is smaller than the next in the X direction
+						
+						//vX = initX = startX + firstItem.cellsWide; // - cellsWide;  // that last bit fails if center item is smaller than the next in the X direction
 						destX = startX - 1;
+						destX2 = startX + firstItem.cellsWide;
 					}
+					
 					//trace("init (ud) vY: "+vY+"  initX: "+initX+ " destX: "+destX);
 					
 					break;
@@ -453,6 +468,19 @@ package com.app
 								}
 							}
 						}
+						if (!NONEXHAUSTIVE){
+							for (vY = initY; vY >= destY; vY--){
+								wif = willItemFit(item,vX,vY);
+								if (wif == 1){
+									placeItem(item,vX,vY);
+									return(true);
+								} else if (wif == -1) {
+									if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
+										break;
+									}
+								}
+							}
+						}
 					} else {
 						for (vY = initY; vY >= destY; vY--){
 							wif = willItemFit(item,vX,vY);
@@ -462,6 +490,19 @@ package com.app
 							} else if (wif == -1) {
 								if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
 									break;
+								}
+							}
+						}
+						if (!NONEXHAUSTIVE){
+							for (vY = initY; vY <= destY; vY++){
+								wif = willItemFit(item,vX,vY);
+								if (wif == 1){
+									placeItem(item,vX,vY);
+									return(true);
+								} else if (wif == -1) {
+									if (NONEXHAUSTIVE || (++wifOOBCount == searchScope)){
+										break;
+									}
 								}
 							}
 						}
@@ -484,6 +525,19 @@ package com.app
 								}
 							}
 						}
+						if (wif == -1 && !NONEXHAUSTIVE){
+							for (vX = initX; vX >= destX; vX--){
+								wif = willItemFit(item,vX,vY);
+								if (wif == 1){
+									placeItem(item,vX,vY);
+									return(true);
+								} else if (wif == -1) {
+									if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
+										break;
+									}
+								}
+							}
+						}
 					} else {
 						for (vX = initX; vX >= destX; vX--){
 							wif = willItemFit(item,vX,vY);
@@ -493,6 +547,19 @@ package com.app
 							} else if (wif == -1) {
 								if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
 									break;
+								}
+							}
+						}
+						if (wif == -1 && !NONEXHAUSTIVE){
+							for (vX = initX; vX <= destX; vX++){
+								wif = willItemFit(item,vX,vY);
+								if (wif == 1){
+									placeItem(item,vX,vY);
+									return(true);
+								} else if (wif == -1) {
+									if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
+										break;
+									}
 								}
 							}
 						}
@@ -510,11 +577,13 @@ package com.app
 					case RIGHT:
 						vX = vX + (delta * 1);
 						if (creepDirection == 1){
-							initY = initY - 1;
-							destY = destY + 1;	
+							//initY = initY - 1;
+							destY = destY + 1;
+							destY2 = destY2 - 1;
 						} else {
-							initY = initY + 1;
+							//initY = initY + 1;
 							destY = destY - 1;
+							destY2 = destY2 + 1;
 						}
 						//trace("next (lr) vX: "+vX+"  initY: "+initY+ " destY: "+destY);
 						
@@ -523,13 +592,15 @@ package com.app
 					case DOWN:
 						vY = vY + (delta * 1);
 						if (creepDirection == 1){
-							initX = initX - 1;
+							//initX = initX - 1;
 							destX = destX + 1;
+							destX2 = destX2 - 1;
 							//vX = startX - 1;
 							//destX = startX + firstItem.cellsWide + 1 - cellsWide;
 						} else {
-							initX = initX + 1;
+							//initX = initX + 1;
 							destX = destX - 1;
+							destX2 = destX2 + 1;
 							//vX = startX + firstItem.cellsWide + 1 - cellsWide;
 							//destX = startX - 1;
 						}
@@ -555,8 +626,30 @@ package com.app
 									}
 								}
 							}
+							for (vY = initY; vY >= destY; vY--){
+								wif = willItemFit(item,vX,vY);
+								if (wif == 1){
+									placeItem(item,vX,vY);
+									return(true);
+								} else if (wif == -1) {
+									if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
+										break;
+									}
+								}
+							}
 						} else {
 							for (vY = initY; vY >= destY; vY--){
+								wif = willItemFit(item,vX,vY);
+								if (wif == 1){
+									placeItem(item,vX,vY);
+									return(true);
+								} else if (wif == -1) {
+									if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
+										break;
+									}
+								}
+							}
+							for (vY = initY; vY <= destY; vY++){
 								wif = willItemFit(item,vX,vY);
 								if (wif == 1){
 									placeItem(item,vX,vY);
@@ -586,6 +679,19 @@ package com.app
 									}
 								}
 							}
+							if (!NONEXHAUSTIVE){
+								for (vX = initX; vX >= destX; vX--){
+									wif = willItemFit(item,vX,vY);
+									if (wif == 1){
+										placeItem(item,vX,vY);
+										return(true);
+									} else if (wif == -1) {
+										if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
+											break;
+										}
+									}
+								}
+							}
 						} else {
 							for (vX = initX; vX >= destX; vX--){
 								wif = willItemFit(item,vX,vY);
@@ -595,6 +701,19 @@ package com.app
 								} else if (wif == -1) {
 									if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
 										break;
+									}
+								}
+							}
+							if (!NONEXHAUSTIVE){
+								for (vX = initX; vX <= destX; vX++){
+									wif = willItemFit(item,vX,vY);
+									if (wif == 1){
+										placeItem(item,vX,vY);
+										return(true);
+									} else if (wif == -1) {
+										if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
+											break;
+										}
 									}
 								}
 							}

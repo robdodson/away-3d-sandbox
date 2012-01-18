@@ -109,10 +109,10 @@ package
 			//addChild(new Pooling1());
 			
 			// Simplified MasonryLayout example
-			//addChild(new MasonryLayoutDemo2());
+			addChild(new MasonryLayoutDemo2());
 			
 			// BitmapMaterial Performane Profile
-			addChild(new BitmapMaterialPerformanceProfile());
+			//addChild(new BitmapMaterialPerformanceProfile());
 		}
 	}
 }
