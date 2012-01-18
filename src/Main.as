@@ -1,5 +1,7 @@
 package
 {
+	import away3d.materials.BitmapMaterial;
+	
 	import com.inchworm.lists.LinkedList;
 	
 	import flash.display.Sprite;
@@ -107,7 +109,10 @@ package
 			//addChild(new Pooling1());
 			
 			// Simplified MasonryLayout example
-			addChild(new MasonryLayoutDemo2());
+			//addChild(new MasonryLayoutDemo2());
+			
+			// BitmapMaterial Performane Profile
+			addChild(new BitmapMaterialPerformanceProfile());
 		}
 	}
 }

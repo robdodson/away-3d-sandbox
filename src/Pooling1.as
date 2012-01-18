@@ -106,7 +106,7 @@ package
 			log.x = 20;
 			addChild(log);
 			
-			planePool = new PlanePool(10);
+			planePool = new PlanePool(1000);
 			
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
@@ -121,7 +121,7 @@ package
 		{
 			var plane:Plane;
 			
-			for (var i:int = 0; i < 1; i++)
+			for (var i:int = 0; i < 2; i++)
 			{
 				plane = planePool.checkOut();
 				plane.x = Math.random() * stage.stageWidth;
