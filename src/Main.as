@@ -6,7 +6,7 @@ package
 	
 	import flash.display.Sprite;
 	
-	[SWF(width="900", height="600", frameRate="60")]
+	[SWF(width="900", height="600", backgroundColor="#333333", frameRate="60")]
 	public class Main extends Sprite
 	{
 		public function Main()
