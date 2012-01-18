@@ -41,6 +41,8 @@ package com.app
 		private const RIGHT:String = "RIGHT";
 		private const LEFT:String = "LEFT";
 		
+		private const NONEXHAUSTIVE:Boolean = false;
+		
 		public function MasonryLayout(_colCount:uint=12, _rowCount:uint=8, _cellWidth:uint=128, _cellHeight:uint=128, _cellPaddingX:uint=0, _cellPaddingY:uint=0)
 		{
 			rowCount = _rowCount;
@@ -386,7 +388,7 @@ package com.app
 			
 			// init
 			var creepDirection:int = (Math.random() > 0.5) ? 1 : -1;
-			trace("creepDirection: "+creepDirection+" delta: "+delta);
+			//trace("creepDirection: "+creepDirection+" delta: "+delta);
 			
 			switch(direction){	// *** to do, remove switch
 				case LEFT:
@@ -403,7 +405,7 @@ package com.app
 						vY = initY = startY + firstItem.cellsHigh; // - cellsHigh;  // that last bit fails if center item is smaller than the next in the Y direction
 						destY = startY - 1;
 					}
-					trace("init (lr) vX: "+vX+"  initY: "+initY+ " destY: "+destY);
+					//trace("init (lr) vX: "+vX+"  initY: "+initY+ " destY: "+destY);
 					
 					break;
 					
@@ -422,7 +424,7 @@ package com.app
 						vX = initX = startX + firstItem.cellsWide; // - cellsWide;  // that last bit fails if center item is smaller than the next in the X direction
 						destX = startX - 1;
 					}
-					trace("init (ud) vY: "+vY+"  initX: "+initX+ " destX: "+destX);
+					//trace("init (ud) vY: "+vY+"  initX: "+initX+ " destX: "+destX);
 					
 					break;
 			}
@@ -446,7 +448,7 @@ package com.app
 								placeItem(item,vX,vY);
 								return(true);
 							} else if (wif == -1) {
-								if (++wifOOBCount >= searchScope){
+								if (NONEXHAUSTIVE || (++wifOOBCount == searchScope)){
 									break;
 								}
 							}
@@ -458,7 +460,7 @@ package com.app
 								placeItem(item,vX,vY);
 								return(true);
 							} else if (wif == -1) {
-								if (++wifOOBCount >= searchScope){
+								if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
 									break;
 								}
 							}
@@ -477,7 +479,7 @@ package com.app
 								placeItem(item,vX,vY);
 								return(true);
 							} else if (wif == -1) {
-								if (++wifOOBCount >= searchScope){
+								if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
 									break;
 								}
 							}
@@ -489,7 +491,7 @@ package com.app
 								placeItem(item,vX,vY);
 								return(true);
 							} else if (wif == -1) {
-								if (++wifOOBCount >= searchScope){
+								if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
 									break;
 								}
 							}
@@ -548,7 +550,7 @@ package com.app
 									placeItem(item,vX,vY);
 									return(true);
 								} else if (wif == -1) {
-									if (++wifOOBCount >= searchScope){
+									if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
 										break;
 									}
 								}
@@ -560,7 +562,7 @@ package com.app
 									placeItem(item,vX,vY);
 									return(true);
 								} else if (wif == -1) {
-									if (++wifOOBCount >= searchScope){
+									if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
 										break;
 									}
 								}
@@ -579,7 +581,7 @@ package com.app
 									placeItem(item,vX,vY);
 									return(true);
 								} else if (wif == -1) {
-									if (++wifOOBCount >= searchScope){
+									if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
 										break;
 									}
 								}
@@ -591,7 +593,7 @@ package com.app
 									placeItem(item,vX,vY);
 									return(true);
 								} else if (wif == -1) {
-									if (++wifOOBCount >= searchScope){
+									if (NONEXHAUSTIVE || ++wifOOBCount == searchScope){
 										break;
 									}
 								}

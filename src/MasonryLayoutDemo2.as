@@ -245,7 +245,7 @@ package
 			layout.clearGrid();
 			indexOfWhereWeRanOutOfRoom = layout.placeItems(planes, "justifiedtopleft");
 			
-			for (var j:int = 0; j < indexOfWhereWeRanOutOfRoom; j++) 
+			for (j = 0; j < indexOfWhereWeRanOutOfRoom; j++) 
 			{
 				canvas.addChild(planes[j]);	
 			}
