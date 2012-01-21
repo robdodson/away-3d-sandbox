@@ -116,7 +116,10 @@ package
 			
 			// Evenly divide the space within a container
 			// and populate it with primitives
-			addChild(new EvenlyDividedSpace());
+			//addChild(new EvenlyDividedSpace());
+			
+			// Practice expanding/contracting a layout
+			addChild(new ExpandingTimelineLayout());
 		}
 	}
 }

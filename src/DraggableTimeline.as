@@ -1,6 +1,7 @@
 package 
 {
 	import away3d.cameras.Camera3D;
+	import away3d.cameras.lenses.PerspectiveLens;
 	import away3d.containers.Scene3D;
 	import away3d.containers.View3D;
 	import away3d.controllers.HoverController;
@@ -14,8 +15,8 @@ package
 	import away3d.primitives.Sphere;
 	import away3d.primitives.WireframeAxesGrid;
 	
-	import com.inchworm.TimelineView;
 	import com.inchworm.TimelineCellView;
+	import com.inchworm.TimelineView;
 	
 	import flash.display.Sprite;
 	import flash.display.Stage;
@@ -44,7 +45,12 @@ package
 		private var antiAlias:Number = 2;
 		
 		// Primitives etc
+		private var plane:Plane;
 		private var timeline:TimelineView;
+		
+		// Frustum
+		private var maxWidth			:Number;
+		private var maxHeight			:Number;
 		
 		// Velocity
 		private var vx					:Number = 0;
@@ -82,6 +88,7 @@ package
 			setupAway3D4();
 			setupPrimitivesAndModels();
 			setupEventListeners();
+			calculateFrustum();
 		}
 		
 		private function setupAway3D4():void
@@ -101,7 +108,7 @@ package
 			addChild(view);
 			
 			// Setup a HoverController (aka HoverCamera3D in older versions of Away3D)
-			cameraController = new HoverController(camera, null, -220, 0.1, 100);
+			cameraController = new HoverController(camera, null, -180.1, 0.1, 100);
 			
 			// Show Away3D stats
 			stats = new AwayStats(view,true);
@@ -114,6 +121,10 @@ package
 		{
 			timeline = new TimelineView();
 			scene.addChild(timeline);
+			
+//			plane = new Plane(new ColorMaterial(0xFF0000), 100, 100, 1, 1, false);
+//			plane.x = 200;
+//			scene.addChild(plane);
 		}
 		
 		private function setupEventListeners():void
@@ -130,11 +141,29 @@ package
 			stage.addEventListener(Event.ENTER_FRAME,renderHandler);
 		}
 		
-		private function renderHandler(e:Event):void // TODO: Break this into separate handlers
+		private function calculateFrustum():void
+		{
+			// dist is the distance from the camera
+			// so if you want the size of the frustum with the default camera 0,0,-1000 and set dist =1000
+			//Then maxheight,maxwidth gives the height,width of the frustum at z=0
+			// At dist = 1500 and camera.distance at 1000 would give you height of the frustum at z=500
+			// http://away3d.com/forum/viewthread/1662/
+			// http://away3d.com/forum/viewthread/797/ (scroll down for diagram)
+			var dist:Number = cameraController.distance;
+			maxHeight = Math.tan((PerspectiveLens(view.camera.lens).fieldOfView * 0.5) * Math.PI / 180) * dist * 2;
+			maxWidth = maxHeight * (view.width / view.height);
+			// remember the maxWidth applies in both the positive AND NEGATIVE direction.
+			
+			//eg
+			//plane.x = (.5 * maxWidth) - maxWidth / 2; // put a plane in the center of the screen
+		}
+		
+		private function renderHandler(e:Event):void
 		{
 			if (isDragging)
 			{
-				var gesturePositionX:Number = 180 * (stage.mouseX / stage.stageWidth) - 90; // TODO need to nail down this ratio of camera viewing angle to stage width
+				var gesturePercent:Number = stage.mouseX / stage.stageWidth;
+				var gesturePositionX:Number = (gesturePercent * maxWidth) - maxWidth / 2; 
 				vx = gesturePositionX - oldX;
 				oldX = gesturePositionX;
 			}
@@ -150,7 +179,9 @@ package
 		
 		private function mouseDownHandler(e:MouseEvent):void
 		{
-			oldX = 180 * (stage.mouseX / stage.stageWidth) - 90;
+			var gesturePercent:Number = stage.mouseX / stage.stageWidth;
+			var gesturePositionX:Number = (gesturePercent * maxWidth) - maxWidth / 2;
+			oldX = gesturePositionX;
 			isDragging = true;
 			stage.addEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
 		}
