@@ -112,7 +112,11 @@ package
 			//addChild(new MasonryLayoutDemo2());
 			
 			// BitmapMaterial Performane Profile
-			addChild(new BitmapMaterialPerformanceProfile());
+			//addChild(new BitmapMaterialPerformanceProfile());
+			
+			// Evenly divide the space within a container
+			// and populate it with primitives
+			addChild(new EvenlyDividedSpace());
 		}
 	}
 }

@@ -1,17 +1,10 @@
 package
 {
-	import com.greensock.TweenLite;
-	import com.gskinner.utils.PerformanceTest;
-	import com.inchworm.pools.BitmapDataPool;
-	
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
 	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.geom.Point;
 	
 	public class BitmapMaterialPerformanceProfile extends Sprite
 	{
+		/*
 		//-----------------------------------------------------------------
 		// Clips
 		private var _facebookView						:FacebookView;
@@ -72,5 +65,6 @@ package
 			bmd.copyPixels(_bmdTemplate, _bmdTemplate.rect, new Point(0, 0));
 			bmd.draw(_facebookTemplateContent, null, null, null, null, true);
 		}
+		*/
 	}
 }
