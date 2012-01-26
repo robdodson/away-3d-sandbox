@@ -108,7 +108,7 @@ package
 			addChild(view);
 			
 			// Setup a HoverController (aka HoverCamera3D in older versions of Away3D)
-			cameraController = new HoverController(camera, null, -180.1, 0.1, 100);
+			cameraController = new HoverController(camera, null, -180.1, 0.1, 750);
 			
 			// Show Away3D stats
 			stats = new AwayStats(view,true);

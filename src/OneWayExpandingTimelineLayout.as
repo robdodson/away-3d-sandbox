@@ -28,7 +28,7 @@ package
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix3D;
 	
-	public class ExpandingTimelineLayout extends Sprite
+	public class OneWayExpandingTimelineLayout extends Sprite
 	{
 		//-----------------------------------------------------------------
 		// Away3D4 Vars
@@ -50,9 +50,12 @@ package
 		private var timeline			:ObjectContainer3D;
 		private var targetIndex			:int;
 		
+		// Flags
+		private var isExpanding			:Boolean;
+		
 		// -----------------------------------------------------------------
 		
-		public function ExpandingTimelineLayout()
+		public function OneWayExpandingTimelineLayout()
 		{
 			// Listen for this to be added to the stage to ensure we have access to the stage
 			this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler, false, 0, true);
@@ -110,14 +113,13 @@ package
 		{
 			timeline = new ObjectContainer3D();
 			planes = new Vector.<Plane>();
-			for (var i:int = 0; i < 10	; i++) 
+			for (var i:int = 0; i < 7; i++) 
 			{
 				var plane:Plane = new Plane(new ColorMaterial(0xFF0000), 100, 100, 1, 1, false);
 				if (i > 0)
 				{
 					var prevPlane:Plane = planes[i - 1];
 					plane.x = prevPlane.x + prevPlane.width + 10;
-					var matrix:Matrix3D = new Matrix3D();
 				}
 				plane.mouseEnabled = true;
 				plane.addEventListener(MouseEvent3D.CLICK, onClick);
@@ -145,14 +147,7 @@ package
 				}
 			}
 			
-			if (planes[targetIndex].width < 300)
-			{
-				TweenLite.to(planes[targetIndex], 1.2, { width: 300, ease: Elastic.easeInOut, onUpdate: positionPlanes });
-			}
-			else
-			{
-				TweenLite.to(planes[targetIndex], 1.2, { width: 100, ease: Elastic.easeInOut, onUpdate: positionPlanes });
-			}
+			isExpanding = true;
 		}
 		
 		private function positionPlanes():void
@@ -176,6 +171,28 @@ package
 		
 		private function renderHandler(e:Event):void
 		{
+			if (isExpanding)
+			{
+				var plane:Plane = planes[targetIndex];
+				
+				if (plane.width == 300)
+				{
+					isExpanding = false;
+				}
+				
+				var prevWidth:Number = plane.width;
+				plane.width += 5;
+				if (targetIndex > Math.floor(planes.length / 2))
+				{
+					plane.x += plane.width / 2 - prevWidth / 2; // flip this to -= or += to change the direction of the expansion
+				}
+				else if (targetIndex < Math.floor(planes.length / 2))
+				{
+					plane.x -= plane.width / 2 - prevWidth / 2; // flip this to -= or += to change the direction of the expansion
+				}
+				positionPlanes();
+			}
+			
 			view.render();
 		}
 	}

@@ -1,34 +1,29 @@
 package 
 {
 	import away3d.cameras.Camera3D;
-	import away3d.cameras.lenses.PerspectiveLens;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.Scene3D;
 	import away3d.containers.View3D;
 	import away3d.controllers.HoverController;
 	import away3d.debug.AwayStats;
 	import away3d.debug.Trident;
-	import away3d.entities.Mesh;
 	import away3d.events.MouseEvent3D;
 	import away3d.materials.ColorMaterial;
 	import away3d.primitives.Plane;
-	import away3d.tools.Merge;
-	import away3d.tools.MeshHelper;
 	import away3d.tools.utils.Bounds;
 	
 	import com.greensock.TweenLite;
-	import com.greensock.easing.Elastic;
-	import com.inchworm.TimelineView;
+	import com.greensock.easing.Sine;
+	import com.gskinner.utils.Rnd;
 	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageDisplayState;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
-	import flash.events.MouseEvent;
 	import flash.geom.Matrix3D;
 	
-	public class ExpandingTimelineLayout extends Sprite
+	public class ExpandingIrregularTimelineLayout extends Sprite
 	{
 		//-----------------------------------------------------------------
 		// Away3D4 Vars
@@ -47,12 +42,20 @@ package
 		
 		// Primitives etc
 		private var planes				:Vector.<Plane>;
+		private var numPlanes			:int = 5;
 		private var timeline			:ObjectContainer3D;
 		private var targetIndex			:int;
+		private var padding				:int = 10;
+		
+		// Flags
+		private var isScaling			:Boolean;
+		
+		// Animation
+		private var easing				:Number = 0.2;
 		
 		// -----------------------------------------------------------------
 		
-		public function ExpandingTimelineLayout()
+		public function ExpandingIrregularTimelineLayout()
 		{
 			// Listen for this to be added to the stage to ensure we have access to the stage
 			this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler, false, 0, true);
@@ -110,14 +113,13 @@ package
 		{
 			timeline = new ObjectContainer3D();
 			planes = new Vector.<Plane>();
-			for (var i:int = 0; i < 10	; i++) 
+			for (var i:int = 0; i < numPlanes; i++) 
 			{
 				var plane:Plane = new Plane(new ColorMaterial(0xFF0000), 100, 100, 1, 1, false);
 				if (i > 0)
 				{
 					var prevPlane:Plane = planes[i - 1];
 					plane.x = prevPlane.x + prevPlane.width + 10;
-					var matrix:Matrix3D = new Matrix3D();
 				}
 				plane.mouseEnabled = true;
 				plane.addEventListener(MouseEvent3D.CLICK, onClick);
@@ -143,15 +145,40 @@ package
 				{
 					targetIndex = i;
 				}
+				else
+				{
+					planes[i].extra = {};
+					planes[i].extra.targetWidth = Rnd.integer(10, 200);
+				}
 			}
 			
-			if (planes[targetIndex].width < 300)
+			planes[targetIndex].extra = {};
+			planes[targetIndex].extra.targetWidth = 300;
+			isScaling = true;
+		}
+		
+		private function scalePlanes():void
+		{
+			for (var i:int = 0; i < numPlanes; i++) 
 			{
-				TweenLite.to(planes[targetIndex], 1.2, { width: 300, ease: Elastic.easeInOut, onUpdate: positionPlanes });
-			}
-			else
-			{
-				TweenLite.to(planes[targetIndex], 1.2, { width: 100, ease: Elastic.easeInOut, onUpdate: positionPlanes });
+				var plane:Plane = planes[i];
+				
+				// Find the distance to the target
+				var dWidth:Number = plane.extra.targetWidth - plane.width;
+
+				if (Math.abs(dWidth) <= 1)
+				{
+					plane.width = plane.extra.targetWidth;
+					isScaling = false;
+					return;
+				}
+				
+				// Create velocity vectors by
+				// multiplying the distance by
+				// the easing value.
+				var vWidth:Number = dWidth * easing;
+				
+				plane.width += vWidth;
 			}
 		}
 		
@@ -165,17 +192,23 @@ package
 					// ex: If the targetIndex is 5 and we know it has already changed it's width then count
 					// down from 4 and update in that direction. This makes the for loop bi-directional
 					var k:int = targetIndex - 1 - i; 
-					planes[k].x = planes[k + 1].x - planes[k + 1].width / 2 - planes[k].width / 2 - 10;
+					planes[k].x = planes[k + 1].x - planes[k + 1].width / 2 - planes[k].width / 2 - padding;
 				}
 				else if (i > targetIndex)
 				{
-					planes[i].x = planes[i - 1].x + planes[i - 1].width / 2 + planes[i].width / 2 + 10;
+					planes[i].x = planes[i - 1].x + planes[i - 1].width / 2 + planes[i].width / 2 + padding;
 				}
 			}
 		}
 		
 		private function renderHandler(e:Event):void
 		{
+			if (isScaling)
+			{
+				scalePlanes();
+				positionPlanes();	
+			}
+			
 			view.render();
 		}
 	}

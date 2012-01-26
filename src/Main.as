@@ -119,7 +119,15 @@ package
 			//addChild(new EvenlyDividedSpace());
 			
 			// Practice expanding/contracting a layout
-			addChild(new ExpandingTimelineLayout());
+			//addChild(new ExpandingTimelineLayout());
+			
+			// Practice expanding/contracting a layout in one direction
+			// instead of centered
+			//addChild(new OneWayExpandingTimelineLayout());
+			
+			// Expand from the center cell while the peripheral cells change shape
+			// but stay anchored to the center.
+			addChild(new ExpandingIrregularTimelineLayout());
 		}
 	}
 }
